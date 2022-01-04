@@ -1,0 +1,34 @@
+
+<div class="body">
+    <h2>QUIZ BUILDER</h2>
+    <form id="add-form" class="add-form" action="">
+        Question:<br>
+        <input id="add-title" type="text" size="20"><br><br>
+        <input id="add-answer-1" type="text" placeholder="Answer 1" size="25"><input id="toggle-answer-1" type="checkbox"><br>
+        <input id="add-answer-2" type="text" placeholder="Answer 2" size="25"><input id="toggle-answer-2" type="checkbox"><br>
+        <input id="add-answer-3" type="text" placeholder="Answer 3" size="25"><input id="toggle-answer-3" type="checkbox"><br>
+        <input id="add-answer-4" type="text" placeholder="Answer 4" size="25"><input id="toggle-answer-4" type="checkbox"><br><br>
+        <input class="button" type="button" (click)="addQuestion()" value="Add question">
+    </form><br>
+
+    <input class="button" type="button" (click)="downloadQuiz()" value="Download quiz">
+    <input class="button" type="file" (change)="uploadQuiz($event)" value="Upload quiz">
+    <a routerLink="/host">
+        <input class="button" type="button" value="Back">
+    </a>
+
+    <div class="questions-container">
+        <div *ngFor="let question of questions; index as i">
+            <div class="question">
+                <h3>
+                    #{{ i+1 }}
+                    {{ question.title }}
+                    <button (click)="removeQuestion(i)">X</button>
+                </h3>
+                <div *ngFor="let answer of question.answers; index as j" [ngStyle]="{'color': answer.correct ? 'green' : 'red'}">
+                    {{ answer.text }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
