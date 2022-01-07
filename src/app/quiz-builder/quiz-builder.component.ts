@@ -75,7 +75,6 @@ export class QuizBuilderComponent {
 				let content: string = e.target?.result?.toString()!;
 				let quiz = JSON.parse(content);
 				this.questions = quiz;
-				console.log(this.questions)
 			};
 			reader.readAsText(event.target.files[0]);
 		}
