@@ -1,0 +1,29 @@
+<div class="body">
+    <input *ngIf="admin" class="button" type="file" (change)="clear(); upload($event)" value="Upload file"><br>
+    <!--input class="button" type="file" (change)="uploadQuiz($event)" value="Upload quiz"-->
+    <!--input class="button" type="file" (change)="uploadFile($event)" value="Upload PDF/PPT"-->
+
+    <div id="viewFile"></div>
+
+    <div class="questions-container">
+        <div *ngFor="let question of quiz; index as i">
+            <div class="question">
+                <h3>
+                    #{{ i+1 }}
+                    {{ question.title }}
+                </h3>
+                <div *ngFor="let answer of question.answers; index as j" [ngStyle]="{'color': answer.correct ? 'green' : 'red'}">
+                    {{ answer.text }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <a routerLink="/home">
+        <input class="button" type="button" value="Home">
+    </a>
+    <a routerLink="/home">
+        <input class="button" type="button" (click)="stopRoom()" value="Stop room">
+    </a>
+</div>

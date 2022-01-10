@@ -20,3 +20,19 @@ APP LAYOUT:
                 files (toggle draw (free, line, arrow, square, highlight, undo, clear))
             EXIT
     BACK
+
+
+NOW
+host redirect to room with admin functions (upload, toggle draw), create quiz separate from menu
+
+BETTER
+host redirect to setup page with create quiz, upload (to local temp), start room
+
+dodaj kaksen primer @input?
+localstorage -> roomid: [users]
+
+ppt viewer (convert v pdf, vsak slide posebej image?)
+draw functions (crta, kvadrat, puscica, prosto, brisi)
+
+enak content za isto sobo (localstorage? - NE kaj ce na 5 strani pdf npr)
+quiz forma za guest

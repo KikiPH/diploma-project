@@ -4,12 +4,19 @@
 	</div>
 	<div>
 		<form action="">
+			Enter name:<br>
+			<input id="name" class="input-box" type="text"><br><br>
 			Enter room id:<br>
 			<input id="room-id" class="input-box" type="text"><br><br>
-			<input class="button" type="button" (click)="joinRoom()" value="Join">
-			<a routerLink="/host">
-				<input class="button" type="button" (click)="hostRoom()" value="Host">
+			<a [routerLink]="(isUser && isRoom) ? ['/room', roomId] : []">
+				<input class="button" type="button" (click)="setUser(); checkRoom();" value="Join">
 			</a>
-		</form>
+			<a [routerLink]="(isUser && isRoom) ? ['/room', roomId, 'admin'] : []">
+				<input class="button" type="button" (click)="setUser(); startRoom();" value="Host">
+			</a>
+		</form><br>
+		<a routerLink="/quiz-builder">
+			<input class="button" type="button" value="Create quiz">
+		</a>
 	</div>
 </div>
