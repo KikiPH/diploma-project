@@ -1,6 +1,7 @@
 SETUP
 Run `npm install`. This will install all the required dependencies.
 Run `ng serve` to start a dev server (`http://localhost:4200/`).
+Run `node server.js` to start the socket listener (run in separate command window).
 Run `ng g component component-name` to generate a new component.
 
 APP LAYOUT:
@@ -9,7 +10,7 @@ APP LAYOUT:
 
     HOST
         CREATE QUIZ
-            QUIZ BUILDER (2-4 answers, text box, with image)
+            QUIZ BUILDER (2-4 answers, text box)
             SAVE
             UPLOAD
             BACK
@@ -21,18 +22,18 @@ APP LAYOUT:
             EXIT
     BACK
 
+TO-DO:
+auto refreshanje serverja, če je sprememba na serverju ~1h (WebDevSimplified)
 
-NOW
-host redirect to room with admin functions (upload, toggle draw), create quiz separate from menu
+localStorage mora shranjevati roomId in socketId (odstrani kar ni potrebno) ~2h
 
-BETTER
-host redirect to setup page with create quiz, upload (to local temp), start room
+pošiljanje pdf -> mogoče naredi screenshot diva (brez pdf viewer orodij) in pošlji vsem ~?h
+dovoli samo pdf -> openoffice in libra pretvori v pdf, powerppoint opozori na napačen format ~1h
 
-dodaj kaksen primer @input?
-localstorage -> roomid: [users]
+kviz za guest -> če ni admin potem naredi formo iz prejetega kviza (in pošlji odgovore) ~2h
 
-ppt viewer (convert v pdf, vsak slide posebej image?)
-draw functions (crta, kvadrat, puscica, prosto, brisi)
+v room dodaj pošiljanje posameznega vprašanja (in statistiko odgovorov, samo za admina) ~2h
 
-enak content za isto sobo (localstorage? - NE kaj ce na 5 strani pdf npr)
-quiz forma za guest
+TO-DO LATER:
+risanje po pdf (in prikaz sprememb ostalim, funkcije samo za admina) ~?h
+stili ~?h

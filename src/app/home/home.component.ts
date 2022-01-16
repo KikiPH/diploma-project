@@ -32,22 +32,32 @@ export class HomeComponent{
 	}
 
 	startRoom() {
-		let roomIds = localStorage.getItem('roomIds')!.split('/');
-		if (roomIds.length === 0) {
-			roomIds = [this.roomId];
-			this.isRoom = true;
-		}
-		else if (roomIds.includes(this.roomId)) {
-			this.isRoom = false;
-			alert('Room already exists.');
-			return;
-		}
-		else {
-			roomIds.push(this.roomId);
-			this.isRoom = true;
-		}
+		let storage = localStorage.getItem('roomIds');
+		let roomIds = storage?.split('/');
 
-		localStorage.setItem('roomIds', roomIds.join('/'));
+		// first room
+		if (!roomIds) {
+			localStorage.setItem('roomIds', this.roomId);
+			this.isRoom = true;
+		}
+		// other rooms already running
+		else {
+			if (roomIds.length === 0) {
+				roomIds = [this.roomId];
+				this.isRoom = true;
+			}
+			else if (roomIds.includes(this.roomId)) {
+				this.isRoom = false;
+				alert('Room already exists.');
+				return;
+			}
+			else {
+				roomIds.push(this.roomId);
+				this.isRoom = true;
+			}
+
+			localStorage.setItem('roomIds', roomIds.join('/'));
+		}
 	}
 
 	checkRoom() {

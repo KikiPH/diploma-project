@@ -1,4 +1,5 @@
 <div class="body">
+    <div *ngIf="admin" id="admin-console" class="admin-console"></div>
     <input *ngIf="admin" class="button" type="file" (change)="clear(); upload($event)" value="Upload file"><br>
     <!--input class="button" type="file" (change)="uploadQuiz($event)" value="Upload quiz"-->
     <!--input class="button" type="file" (change)="uploadFile($event)" value="Upload PDF/PPT"-->
