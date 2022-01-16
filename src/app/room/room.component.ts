@@ -48,16 +48,43 @@ export class RoomComponent implements OnInit {
 			}
 			
 			// send who connected to admin socket
-			this.socket.emit('user-joined', this.name, this.adminSocketId);
+			this.socket.emit('user-connected', this.name, this.adminSocketId);
 		});
 
-		this.socket.on('get-user-joined', name => {
+		this.socket.on('get-user-connected', name => {
 			const div = document.createElement('div');
 			div.textContent = `${name} connected`;
+			div.style.paddingLeft = '5px';
 
 			let adminConsole = document.getElementById('admin-console');
 			adminConsole?.append(div);
 		});
+
+		this.socket.on('get-user-disconnected', name=> {
+			const div = document.createElement('div');
+			div.textContent = `${name} disconnected`;
+			div.style.paddingLeft = '5px';
+
+			let adminConsole = document.getElementById('admin-console');
+			adminConsole?.append(div);
+		});
+
+		this.socket.on('get-question', name => {
+			const div = document.createElement('div');
+			let id = new Date().getTime().toString();
+			div.id = id;
+			div.textContent = `${name} has a question`;
+			div.style.paddingLeft = '5px';
+
+			let adminConsole = document.getElementById('admin-console');
+			adminConsole?.append(div);
+
+			// clear message after 3 seconds
+			setInterval(() => {
+				let message = document.getElementById(id);
+				message!.innerHTML = '';
+			}, 3000);
+		})
 
 		this.socket.on('get-quiz', quiz => {
 			this.quiz = quiz;
@@ -127,15 +154,23 @@ export class RoomComponent implements OnInit {
 		}
 	}
 
+	sendQuestion() {
+		this.socket.emit('send-question', this.name, this.adminSocketId);
+	}
+
 	stopRoom() {
 		localStorage.removeItem(`room${this.roomId}`);
 	}
 
 	leaveRoom() {
+		// remove user from connected users in localStorage
 		let room = localStorage.getItem(`room${this.roomId}`);
 		let [admin, users] = room!.split(':');
 		users = users.replace(this.userSocketId, '');
 		localStorage.setItem(`room${this.roomId}`, `${admin}:${users}`);
+
+		// send who disconnected to admin socket
+		this.socket.emit('user-disconnected', this.name, this.adminSocketId);
 	}
 
 	// returns admins socket id

@@ -7,8 +7,12 @@ const io = require('socket.io')(3000, {
 
 io.on('connection', socket => {
     // sends username of new connection to admin
-    socket.on('user-joined', (name, socketId) => {
-        socket.to(socketId).emit('get-user-joined', name);
+    socket.on('user-connected', (name, socketId) => {
+        socket.to(socketId).emit('get-user-connected', name);
+    });
+
+    socket.on('user-disconnected', (name, socketId) => {
+        socket.to(socketId).emit('get-user-disconnected', name);
     });
 
     // sends quiz from admin to all participants
@@ -17,4 +21,8 @@ io.on('connection', socket => {
             socket.to(socketId).emit('get-quiz', quiz);
         }
     })
+
+    socket.on('send-question', (name, socketId) => {
+        socket.to(socketId).emit('get-question', name);
+    });
 });

@@ -1,7 +1,7 @@
 SETUP
 Run `npm install`. This will install all the required dependencies.
 Run `ng serve` to start a dev server (`http://localhost:4200/`).
-Run `node server.js` to start the socket listener (run in separate command window).
+Run `nodemon server.js` to start the socket listener (run in separate command window).
 Run `ng g component component-name` to generate a new component.
 
 APP LAYOUT:
@@ -30,5 +30,6 @@ kviz za guest -> če ni admin potem naredi formo iz prejetega kviza (in pošlji 
 v room dodaj pošiljanje posameznega vprašanja (in statistiko odgovorov, samo za admina) ~2h
 
 TO-DO LATER:
+loči admin/user funkcije v .ts datotekah
 risanje po pdf (in prikaz sprememb ostalim, funkcije samo za admina) ~?h
 stili ~?h

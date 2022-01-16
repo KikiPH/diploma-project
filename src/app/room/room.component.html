@@ -21,6 +21,7 @@
     </div>
 
     <br>
+    <input *ngIf="!admin" class="button" type="button" (click)="sendQuestion()" value="Unclear">
     <a routerLink="/home">
         <input *ngIf="admin" class="button" type="button" (click)="stopRoom()" value="Stop room">
         <input *ngIf="!admin" class="button" type="button" (click)="leaveRoom()" value="Home">
