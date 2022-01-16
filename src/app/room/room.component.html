@@ -22,9 +22,7 @@
 
     <br>
     <a routerLink="/home">
-        <input class="button" type="button" value="Home">
-    </a>
-    <a routerLink="/home">
-        <input class="button" type="button" (click)="stopRoom()" value="Stop room">
+        <input *ngIf="admin" class="button" type="button" (click)="stopRoom()" value="Stop room">
+        <input *ngIf="!admin" class="button" type="button" (click)="leaveRoom()" value="Home">
     </a>
 </div>

@@ -9,19 +9,51 @@ import { io } from 'socket.io-client';
 export class RoomComponent implements OnInit {
 	socket = io('http://localhost:3000');
 
-	quiz = [] as any;
 	roomId = window.location.pathname.split('/')[2];
 	admin = window.location.href.indexOf('admin') > -1;
+	name = window.location.href.split('?name=')[1];
+	adminSocketId = '';
+	userSocketId = '';
+
+	quiz = [] as any;
 
 	ngOnInit() {
 		this.socket.on('connect', () => {
-			console.log(`You connected with id: ${this.socket.id}`);
-			this.socket.emit('user-joined', this.socket.id);
+
+			// if new room save admins socket id to it's corresponding room in localStorage
+			if (this.admin) {
+				let room = localStorage.getItem(`room${this.roomId}`);
+				room = `${this.socket.id}`;
+				localStorage.setItem(`room${this.roomId}`, room!);
+
+				this.adminSocketId = this.socket.id;
+				this.userSocketId = this.socket.id;
+			}
+			// if joining a room, get admin socket id
+			else {
+				this.adminSocketId = this.getAdmin();
+				this.userSocketId = this.socket.id;
+
+				// and append your id to rooms users list
+				let room = localStorage.getItem(`room${this.roomId}`);
+				let users = room!.split(':')[1];
+				if (users) {
+					room += `,${this.userSocketId}`;
+				}
+				else {
+					room += `:${this.userSocketId}`;
+				}
+
+				localStorage.setItem(`room${this.roomId}`, room!);
+			}
+			
+			// send who connected to admin socket
+			this.socket.emit('user-joined', this.name, this.adminSocketId);
 		});
 
-		this.socket.on('get-user-joined', id => {
+		this.socket.on('get-user-joined', name => {
 			const div = document.createElement('div');
-			div.textContent = `User with id ${id} connected`;
+			div.textContent = `${name} connected`;
 
 			let adminConsole = document.getElementById('admin-console');
 			adminConsole?.append(div);
@@ -30,6 +62,14 @@ export class RoomComponent implements OnInit {
 		this.socket.on('get-quiz', quiz => {
 			this.quiz = quiz;
 		});
+
+		// for debugging purposes
+		setInterval(() => {
+			let room = localStorage.getItem(`room${this.roomId}`);
+			let [admin, users] = room!.split(':');
+			console.log('Admin:', admin);
+			console.log('Users:', users);
+		}, 3000);
 	}
 
 	upload(event: any) {
@@ -60,7 +100,7 @@ export class RoomComponent implements OnInit {
 
 		// send quiz to all connected users
 		setTimeout(() => {
-			this.socket.emit('send-quiz', this.quiz);
+			this.socket.emit('send-quiz', this.quiz, this.getUsers());
 		}, 100);
 	}
 
@@ -74,9 +114,8 @@ export class RoomComponent implements OnInit {
 			fileDisplay!.innerHTML = `<embed id='viewPDF' src='${src}' width='800' height='600' type='application/pdf'>`;
 		}
 
-		// not working
 		else if (fileType == 'application/vnd.ms-powerpoint') {
-			fileDisplay!.innerHTML = `<iframe src='${src}' width='100%' height='600px' frameborder='0'>`;
+			alert('Powerpoint file type is not supported. Please convert to pdf and try again.');
 		}
 
 		else if (fileType.includes('image')) {
@@ -84,13 +123,32 @@ export class RoomComponent implements OnInit {
 		}
 
 		else {
-			console.log(`File type ${fileType} is not supported.`);
+			alert(`File type ${fileType} is not supported. Please upload image or pdf.`);
 		}
 	}
 
 	stopRoom() {
-		let roomIds = localStorage.getItem('roomIds')!.split('/');
-		roomIds = roomIds.filter(room => room != this.roomId);
-		localStorage.setItem('roomIds', roomIds.join('/'));
+		localStorage.removeItem(`room${this.roomId}`);
+	}
+
+	leaveRoom() {
+		let room = localStorage.getItem(`room${this.roomId}`);
+		let [admin, users] = room!.split(':');
+		users = users.replace(this.userSocketId, '');
+		localStorage.setItem(`room${this.roomId}`, `${admin}:${users}`);
+	}
+
+	// returns admins socket id
+	getAdmin() {
+		let room = localStorage.getItem(`room${this.roomId}`);
+		let admin = room!.split(':')[0];
+		return admin;
+	}
+
+	// returns all connected users socket ids
+	getUsers() {
+		let room = localStorage.getItem(`room${this.roomId}`);
+		let users = room!.split(':')[1];
+		return users.split(',');
 	}
 }

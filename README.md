@@ -23,15 +23,10 @@ APP LAYOUT:
     BACK
 
 TO-DO:
-auto refreshanje serverja, če je sprememba na serverju ~1h (WebDevSimplified)
-
-localStorage mora shranjevati roomId in socketId (odstrani kar ni potrebno) ~2h
-
-pošiljanje pdf -> mogoče naredi screenshot diva (brez pdf viewer orodij) in pošlji vsem ~?h
-dovoli samo pdf -> openoffice in libra pretvori v pdf, powerppoint opozori na napačen format ~1h
+pošiljanje pdf -> mogoče naredi screenshot diva (brez pdf viewer orodij) in pošlji vsem ~?h DANES
+dovoli samo pdf -> openoffice in libra pretvori v pdf, powerppoint opozori na napačen format ~1h DANES
 
 kviz za guest -> če ni admin potem naredi formo iz prejetega kviza (in pošlji odgovore) ~2h
-
 v room dodaj pošiljanje posameznega vprašanja (in statistiko odgovorov, samo za admina) ~2h
 
 TO-DO LATER:

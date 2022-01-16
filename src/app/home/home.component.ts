@@ -27,42 +27,27 @@ export class HomeComponent{
 		this.name = name;
 		this.roomId = id;
 		this.isUser = true;
-		console.log('User name:', this.name);
-		console.log('Room:', this.roomId);
 	}
 
 	startRoom() {
-		let storage = localStorage.getItem('roomIds');
-		let roomIds = storage?.split('/');
+		let room = localStorage.getItem(`room${this.roomId}`);
 
-		// first room
-		if (!roomIds) {
-			localStorage.setItem('roomIds', this.roomId);
+		// room doesn't exist
+		if (!room) {
+			localStorage.setItem(`room${this.roomId}`, '');
 			this.isRoom = true;
 		}
-		// other rooms already running
+		// room already exists
 		else {
-			if (roomIds.length === 0) {
-				roomIds = [this.roomId];
-				this.isRoom = true;
-			}
-			else if (roomIds.includes(this.roomId)) {
-				this.isRoom = false;
-				alert('Room already exists.');
-				return;
-			}
-			else {
-				roomIds.push(this.roomId);
-				this.isRoom = true;
-			}
-
-			localStorage.setItem('roomIds', roomIds.join('/'));
+			alert('Room already exists.');
+			return;
 		}
 	}
 
 	checkRoom() {
-		let roomIds = localStorage.getItem('roomIds')!.split('/');
-		if (roomIds.includes(this.roomId)) {
+		let room = localStorage.getItem(`room${this.roomId}`);
+
+		if (room) {
 			this.isRoom = true;
 		}
 		else {

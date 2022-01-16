@@ -6,13 +6,15 @@ const io = require('socket.io')(3000, {
 });
 
 io.on('connection', socket => {
-    console.log(`User with id ${socket.id} connected`);
-
-    socket.on('user-joined', id => {
-        socket.broadcast.emit('get-user-joined', id);
+    // sends username of new connection to admin
+    socket.on('user-joined', (name, socketId) => {
+        socket.to(socketId).emit('get-user-joined', name);
     });
 
-    socket.on('send-quiz', quiz => {
-        socket.broadcast.emit('get-quiz', quiz);
+    // sends quiz from admin to all participants
+    socket.on('send-quiz', (quiz, socketIds) => {
+        for (let socketId of socketIds) {
+            socket.to(socketId).emit('get-quiz', quiz);
+        }
     })
 });
