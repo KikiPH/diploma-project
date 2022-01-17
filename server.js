@@ -22,6 +22,12 @@ io.on('connection', socket => {
         }
     })
 
+    socket.on('send-image', (image, socketIds) => {
+        for (let socketId of socketIds) {
+            socket.to(socketId).emit('get-image', image);
+        }
+    })
+
     socket.on('send-question', (name, socketId) => {
         socket.to(socketId).emit('get-question', name);
     });

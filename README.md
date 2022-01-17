@@ -11,25 +11,33 @@ APP LAYOUT:
     HOST
         CREATE QUIZ
             QUIZ BUILDER (2-4 answers, text box)
-            SAVE
-            UPLOAD
+            SAVE (download)
+            UPLOAD (edit existing quiz)
             BACK
 
         START ROOM
-            UPLOAD (quiz, pdf, ppt, img - on upload remove previous file)
-                quiz (interactive with guests, back/forward, show correct)
+            UPLOAD (quiz, pdf, img - on upload remove previous file)
+                quiz (interactive with guests, show statistics to admin)
                 files (toggle draw (free, line, arrow, square, highlight, undo, clear))
-            EXIT
+            SEND QUESTION (sends single question to see how clear the current topic is)
+            UNCLEAR (for student to signal to the teacher that they might have a question)
+            EXIT (stop/leave room)
     BACK
 
 TO-DO:
-pošiljanje pdf -> mogoče naredi screenshot diva (brez pdf viewer orodij) in pošlji vsem ~?h DANES
-dovoli samo pdf -> openoffice in libra pretvori v pdf, powerppoint opozori na napačen format ~1h DANES
+pošiljanje pdf -> mogoče naredi screenshot diva (brez pdf viewer orodij) in pošlji vsem
+how to send image socket io -> how to screen capture pdf div to image -> setTimeout(send image of pdf screen capture)
 
-kviz za guest -> če ni admin potem naredi formo iz prejetega kviza (in pošlji odgovore) ~2h
-v room dodaj pošiljanje posameznega vprašanja (in statistiko odgovorov, samo za admina) ~2h
+kviz za guest -> če ni admin potem naredi formo iz prejetega kviza (in pošlji odgovore)
+v room dodaj pošiljanje posameznega vprašanja (in statistiko odgovorov, samo za admina)
 
 TO-DO LATER:
-loči admin/user funkcije v .ts datotekah
-risanje po pdf (in prikaz sprememb ostalim, funkcije samo za admina) ~?h
-stili ~?h
+loči/uredi admin/user funkcije v .ts datotekah
+risanje po pdf (in prikaz sprememb ostalim, funkcije samo za admina)
+stili
+
+EXTRA:
+nodemon server.js (npm install -g nodemon), ko bo končan projekt lahko tudi node server.js
+cors origin * slaba varnost
+samo pdf in img -> ostalo težko prikazati ali pretvoriti v pdf (naj uporabnik pretvori sam eksterno)
+                   (ppt - skoraj nemogoče (posebej generira kodo za embedanje), odt - openOffice, libra)

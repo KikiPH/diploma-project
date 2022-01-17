@@ -90,6 +90,12 @@ export class RoomComponent implements OnInit {
 			this.quiz = quiz;
 		});
 
+		this.socket.on('get-image', image => {
+			let src = `data:image/jpg;base64,${image}`;
+			let fileDisplay = document.getElementById('viewFile');
+			fileDisplay!.innerHTML = `<img id='viewImg' src='${src}' width='800' height='600'>`;
+		});
+
 		// for debugging purposes
 		setInterval(() => {
 			let room = localStorage.getItem(`room${this.roomId}`);
@@ -141,18 +147,30 @@ export class RoomComponent implements OnInit {
 			fileDisplay!.innerHTML = `<embed id='viewPDF' src='${src}' width='800' height='600' type='application/pdf'>`;
 		}
 
-		else if (fileType == 'application/vnd.ms-powerpoint') {
-			alert('Powerpoint file type is not supported. Please convert to pdf and try again.');
-		}
-
 		else if (fileType.includes('image')) {
-			fileDisplay!.innerHTML = `<img src='${src}' width='800' height='600'>`;
+			fileDisplay!.innerHTML = `<img id='viewImg' src='${src}' width='800' height='600'>`;
+
+			let image = document.getElementById('viewImg');
+			let base64 = this.getBase64Image(image);
+			this.socket.emit('send-image', base64, this.getUsers());
 		}
 
 		else {
-			alert(`File type ${fileType} is not supported. Please upload image or pdf.`);
+			alert(`File type ${fileType} is not supported. Please convert to pdf or image and try again.`);
 		}
 	}
+
+	getBase64Image(image: any) {
+		let canvas = document.createElement("canvas");
+		canvas.width = image.width;
+		canvas.height = image.height;
+
+		let ctx = canvas.getContext("2d");
+		ctx!.drawImage(image, 0, 0);
+
+		let dataURL = canvas.toDataURL("image/png");
+		return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+	  }
 
 	sendQuestion() {
 		this.socket.emit('send-question', this.name, this.adminSocketId);
