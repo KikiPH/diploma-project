@@ -22,6 +22,12 @@ io.on('connection', socket => {
         }
     })
 
+    socket.on('send-pdf', (pdf, socketIds) => {
+        for (let socketId of socketIds) {
+            socket.to(socketId).emit('get-pdf', pdf);
+        }
+    })
+
     socket.on('send-image', (image, socketIds) => {
         for (let socketId of socketIds) {
             socket.to(socketId).emit('get-image', image);

@@ -90,19 +90,33 @@ export class RoomComponent implements OnInit {
 			this.quiz = quiz;
 		});
 
+		this.socket.on('get-pdf', pdf => {
+			let fileDisplay = document.getElementById('viewFilePDF');
+			let blob = new Blob([pdf], { type: 'application/pdf' });
+			let reader = new FileReader();
+			reader.readAsDataURL(blob);
+			reader.onloadend = () => {
+				fileDisplay!.innerHTML = `<embed id='viewPDF' src='${reader.result}' width='800' height='600' type='application/pdf'>`;
+			}
+		});
+
 		this.socket.on('get-image', image => {
-			let src = `data:image/jpg;base64,${image}`;
 			let fileDisplay = document.getElementById('viewFile');
-			fileDisplay!.innerHTML = `<img id='viewImg' src='${src}' width='800' height='600'>`;
+			let blob = new Blob([image]);
+			let reader = new FileReader();
+			reader.readAsDataURL(blob);
+			reader.onloadend = () => {
+				fileDisplay!.innerHTML = `<img id='viewImg' src='${reader.result}' width='800' height='600'>`;
+			}
 		});
 
 		// for debugging purposes
-		setInterval(() => {
+		/*setInterval(() => {
 			let room = localStorage.getItem(`room${this.roomId}`);
 			let [admin, users] = room!.split(':');
 			console.log('Admin:', admin);
 			console.log('Users:', users);
-		}, 3000);
+		}, 3000);*/
 	}
 
 	upload(event: any) {
@@ -145,32 +159,18 @@ export class RoomComponent implements OnInit {
 
 		if (fileType == 'application/pdf') {
 			fileDisplay!.innerHTML = `<embed id='viewPDF' src='${src}' width='800' height='600' type='application/pdf'>`;
+			this.socket.emit('send-pdf', event.target.files[0], this.getUsers());
 		}
 
 		else if (fileType.includes('image')) {
 			fileDisplay!.innerHTML = `<img id='viewImg' src='${src}' width='800' height='600'>`;
-
-			let image = document.getElementById('viewImg');
-			let base64 = this.getBase64Image(image);
-			this.socket.emit('send-image', base64, this.getUsers());
+			this.socket.emit('send-image', event.target.files[0], this.getUsers());
 		}
 
 		else {
 			alert(`File type ${fileType} is not supported. Please convert to pdf or image and try again.`);
 		}
 	}
-
-	getBase64Image(image: any) {
-		let canvas = document.createElement("canvas");
-		canvas.width = image.width;
-		canvas.height = image.height;
-
-		let ctx = canvas.getContext("2d");
-		ctx!.drawImage(image, 0, 0);
-
-		let dataURL = canvas.toDataURL("image/png");
-		return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
-	  }
 
 	sendQuestion() {
 		this.socket.emit('send-question', this.name, this.adminSocketId);

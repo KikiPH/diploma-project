@@ -25,8 +25,8 @@ APP LAYOUT:
     BACK
 
 TO-DO:
-pošiljanje pdf -> mogoče naredi screenshot diva (brez pdf viewer orodij) in pošlji vsem
-how to send image socket io -> how to screen capture pdf div to image -> setTimeout(send image of pdf screen capture)
+pošlji pdf -> pošlje sliko trenutnega pri profesorju in celoten pdf, da si lahko učenec sam ogleduje zapiske (checkbox kdaj pošlje cel pdf)
++clear na vsak nov socket.on
 
 kviz za guest -> če ni admin potem naredi formo iz prejetega kviza (in pošlji odgovore)
 v room dodaj pošiljanje posameznega vprašanja (in statistiko odgovorov, samo za admina)
