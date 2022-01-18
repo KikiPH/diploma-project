@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { io } from 'socket.io-client';
+import html2canvas from 'html2canvas';
 
 @Component({
 	selector: 'room',
@@ -158,8 +159,33 @@ export class RoomComponent implements OnInit {
 		let fileType = event.target.files[0].type;
 
 		if (fileType == 'application/pdf') {
-			fileDisplay!.innerHTML = `<embed id='viewPDF' src='${src}' width='800' height='600' type='application/pdf'>`;
+			fileDisplay!.innerHTML = `<iframe id='viewPDF' src='${src}' width='800' height='600'>`;
 			this.socket.emit('send-pdf', event.target.files[0], this.getUsers());
+			
+
+			/*
+			zaenkrat kot to:
+			https://stackblitz.com/edit/angular-html2canvas-example
+			poglej še to:
+			https://stackoverflow.com/questions/56543686/is-it-possible-to-to-take-a-screenshot-of-an-iframe-in-a-web-page
+			https://www.scrapehero.com/how-to-take-screenshots-of-a-web-page-using-puppeteer/
+			*/
+			html2canvas(document.querySelector('#viewFile')!).then(canvas => {
+				let canvasURL = canvas.toDataURL();
+				let image = new Image();
+				image.src = canvasURL;
+				document.body.appendChild(image);
+				console.log("canvas.toDataURL() -> " + canvasURL);
+	
+				canvas.toBlob(function(blob) {
+					let reader = new FileReader();
+					reader.readAsDataURL(blob!);
+					reader.onloadend = function() {
+						let base64Data = reader.result;
+						console.log("Base64 -> " + base64Data);
+					}
+				});
+			});
 		}
 
 		else if (fileType.includes('image')) {
@@ -202,6 +228,6 @@ export class RoomComponent implements OnInit {
 	getUsers() {
 		let room = localStorage.getItem(`room${this.roomId}`);
 		let users = room!.split(':')[1];
-		return users.split(',');
+		return users?.split(',');
 	}
 }
