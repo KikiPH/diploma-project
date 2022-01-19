@@ -37,4 +37,10 @@ io.on('connection', socket => {
     socket.on('send-question', (name, socketId) => {
         socket.to(socketId).emit('get-question', name);
     });
+
+    socket.on('send-video', (blob, socketIds) => {
+        for (let socketId of socketIds) {
+            socket.to(socketId).emit('get-video', blob);
+        }
+    });
 });

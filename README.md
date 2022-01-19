@@ -25,8 +25,15 @@ APP LAYOUT:
     BACK
 
 TO-DO:
-pošlji pdf -> pošlje sliko trenutnega pri profesorju in celoten pdf, da si lahko učenec sam ogleduje zapiske (checkbox kdaj pošlje cel pdf)
+https://github.com/muaz-khan/RTCMultiConnection/issues/818
++loči/uredi admin/user funkcije v .ts datotekah
++function() -> () =>
++video lag fix
++innerHTML bad
 +clear na vsak nov socket.on
+
+crop stream to div size
+kaj z image? a se rabi?
 
 kviz za guest -> če ni admin potem naredi formo iz prejetega kviza (in pošlji odgovore)
 v room dodaj pošiljanje posameznega vprašanja (in statistiko odgovorov, samo za admina)
