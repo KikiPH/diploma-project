@@ -1,15 +1,18 @@
 <div class="body">
-    <div *ngIf="admin" id="admin-console" class="admin-console"></div>
-    <input *ngIf="admin" class="button" type="file" (change)="clear(); upload($event)" value="Upload file"><br>
-    <!--input class="button" type="file" (change)="uploadQuiz($event)" value="Upload quiz"-->
-    <!--input class="button" type="file" (change)="uploadFile($event)" value="Upload PDF/PPT"-->
+    <div *ngIf="admin">
+        <div id="admin-console" class="admin-console"></div>
+        <input class="button" type="file" (change)="clear(); upload($event)" value="Upload file"><br>
+        <label><input type="checkbox" (change)="toggleShareScreen()" checked>Share screen</label>
+        <label><input type="checkbox" (change)="toggleSendFile()" checked>Send file</label>
+        <!--input class="button" type="file" (change)="uploadQuiz($event)" value="Upload quiz"-->
+        <!--input class="button" type="file" (change)="uploadFile($event)" value="Upload PDF/PPT"-->
+    </div>
 
     <br>
-    <div id="viewFile"></div>
-    <br>
-    <div id="viewFilePDF"></div>
-    <br>
-    <video id="viewVideo" width="800" height="600"></video>
+    <div id="display" class="display">
+        <video *ngIf="!admin" id="viewVideo" class="display-panel" width="800" height="600" autoplay muted></video>
+        <div id="viewFile" class="display-panel"></div>
+    </div>
 
     <div class="questions-container">
         <div *ngFor="let question of quiz; index as i">

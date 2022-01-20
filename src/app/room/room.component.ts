@@ -16,8 +16,11 @@ export class RoomComponent implements OnInit {
 	userSocketId = '';
 
 	quiz = [] as any;
+	shareScreen = true;
+	sendFile = true;
 
 	ngOnInit() {
+		// COMMON REQUESTS
 		this.socket.on('connect', () => {
 
 			// if new room save admins socket id to it's corresponding room in localStorage
@@ -51,6 +54,7 @@ export class RoomComponent implements OnInit {
 			this.socket.emit('user-connected', this.name, this.adminSocketId);
 		});
 
+		// ADMIN REQUESTS
 		this.socket.on('get-user-connected', name => {
 			const div = document.createElement('div');
 			div.textContent = `${name} connected`;
@@ -86,12 +90,13 @@ export class RoomComponent implements OnInit {
 			}, 3000);
 		})
 
+		// GUEST REQUESTS
 		this.socket.on('get-quiz', quiz => {
 			this.quiz = quiz;
 		});
 
 		this.socket.on('get-pdf', pdf => {
-			let fileDisplay = document.getElementById('viewFilePDF');
+			let fileDisplay = document.getElementById('viewFile');
 			let blob = new Blob([pdf], { type: 'application/pdf' });
 			let reader = new FileReader();
 			reader.readAsDataURL(blob);
@@ -100,6 +105,14 @@ export class RoomComponent implements OnInit {
 			}
 		});
 
+		this.socket.on('get-video', arrayBuffer => {
+			let blob = new Blob([arrayBuffer]);
+			let videoDisplay = document.getElementById('viewVideo') as HTMLVideoElement;
+			videoDisplay.src = window.URL.createObjectURL(blob);
+			videoDisplay.muted = true;
+			videoDisplay.play();
+		});
+		
 		this.socket.on('get-image', image => {
 			let fileDisplay = document.getElementById('viewFile');
 			let blob = new Blob([image]);
@@ -108,13 +121,6 @@ export class RoomComponent implements OnInit {
 			reader.onloadend = () => {
 				fileDisplay!.innerHTML = `<img id='viewImg' src='${reader.result}' width='800' height='600'>`;
 			}
-		});
-
-		this.socket.on('get-video', function(arrayBuffer) {
-			let blob = new Blob([arrayBuffer]);
-			let videoDisplay = document.getElementById('viewVideo') as HTMLVideoElement;
-			videoDisplay.src = window.URL.createObjectURL(blob);
-			videoDisplay.play();
 		});
 
 		// for debugging purposes
@@ -126,6 +132,7 @@ export class RoomComponent implements OnInit {
 		}, 3000);*/
 	}
 
+	// ADMIN FUNCTIONS
 	upload(event: any) {
 		let fileType = event.target.files[0].type;
 		if (fileType == 'application/json') {
@@ -134,12 +141,6 @@ export class RoomComponent implements OnInit {
 		else {
 			this.uploadFile(event);
 		}
-	}
-
-	clear() {
-		this.quiz = [];
-		let fileDisplay = document.getElementById('viewFile');
-		fileDisplay!.innerHTML = "";
 	}
 
 	uploadQuiz(event: any) {
@@ -166,30 +167,33 @@ export class RoomComponent implements OnInit {
 
 		if (fileType == 'application/pdf') {
 			fileDisplay!.innerHTML = `<iframe id='viewPDF' src='${src}' width='800' height='600'>`;
-			this.socket.emit('send-pdf', event.target.files[0], this.getUsers());
+			if (this.sendFile) {
+				this.socket.emit('send-pdf', event.target.files[0], this.getUsers());
+			}
 			
-			let me = this;
-			let chunks: any = [];
-			navigator.mediaDevices.getDisplayMedia({audio: false, video: {width: 800, height: 600}}).then(function(stream: any) {
-				let mediaRecorder = new MediaRecorder(stream);
-				mediaRecorder.onstart = function(e) {
-					chunks = [];
-				};
-				mediaRecorder.ondataavailable = function(e) {
-					chunks.push(e.data);
-				};
-				mediaRecorder.onstop = function(e) {
-					let blob = new Blob(chunks);
-					me.socket.emit('send-video', blob, me.getUsers());
-				}
-
-				mediaRecorder.start();
-
-				setInterval(function() {
-					mediaRecorder.stop();
+			if (this.shareScreen) {
+				let chunks: any = [];
+				let constraints = { audio: false, video: { width: 800, height: 600 } };
+				navigator.mediaDevices.getDisplayMedia(constraints).then((stream: any) => {
+					let mediaRecorder = new MediaRecorder(stream);
+					mediaRecorder.onstart = () => {
+						chunks = [];
+					};
+					mediaRecorder.ondataavailable = e => {
+						chunks.push(e.data);
+					};
+					mediaRecorder.onstop = () => {
+						let blob = new Blob(chunks);
+						this.socket.emit('send-video', blob, this.getUsers());
+					}
 					mediaRecorder.start();
-				}, 500);
-			});
+
+					setInterval(() => {
+						mediaRecorder.stop();
+						mediaRecorder.start();
+					}, 500); // smaller timeout -> less delay but more flickering
+				});
+			}
 		}
 
 		else if (fileType.includes('image')) {
@@ -202,12 +206,13 @@ export class RoomComponent implements OnInit {
 		}
 	}
 
-	sendQuestion() {
-		this.socket.emit('send-question', this.name, this.adminSocketId);
-	}
-
 	stopRoom() {
 		localStorage.removeItem(`room${this.roomId}`);
+	}
+
+	// GUEST FUNCTIONS
+	sendQuestion() {
+		this.socket.emit('send-question', this.name, this.adminSocketId);
 	}
 
 	leaveRoom() {
@@ -219,6 +224,15 @@ export class RoomComponent implements OnInit {
 
 		// send who disconnected to admin socket
 		this.socket.emit('user-disconnected', this.name, this.adminSocketId);
+	}
+
+	// HELPER FUNCTIONS
+	clear() {
+		this.quiz = [];
+		let viewVideo = document.getElementById('viewVideo');
+		if (viewVideo) viewVideo.innerHTML = "";
+		let viewFile = document.getElementById('viewFile');
+		if (viewFile) viewFile.innerHTML = "";
 	}
 
 	// returns admins socket id
@@ -233,5 +247,13 @@ export class RoomComponent implements OnInit {
 		let room = localStorage.getItem(`room${this.roomId}`);
 		let users = room!.split(':')[1];
 		return users ? users.split(',') : [];
+	}
+
+	toggleShareScreen() {
+		this.shareScreen = !this.shareScreen;
+	}
+
+	toggleSendFile() {
+		this.sendFile = !this.sendFile;
 	}
 }

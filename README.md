@@ -25,21 +25,15 @@ APP LAYOUT:
     BACK
 
 TO-DO:
-https://github.com/muaz-khan/RTCMultiConnection/issues/818
-+loči/uredi admin/user funkcije v .ts datotekah
-+function() -> () =>
-+video lag fix
-+innerHTML bad
-+clear na vsak nov socket.on
-
+video lag fix
+start/pause/continue/end stream
 crop stream to div size
-kaj z image? a se rabi?
+on new upload -> clear timeout
+kaj z image? a se rabi? -> lahko ostane podprto ampak se zdruzi z send-file (case jpeg/png)
 
 kviz za guest -> če ni admin potem naredi formo iz prejetega kviza (in pošlji odgovore)
 v room dodaj pošiljanje posameznega vprašanja (in statistiko odgovorov, samo za admina)
 
-TO-DO LATER:
-loči/uredi admin/user funkcije v .ts datotekah
 risanje po pdf (in prikaz sprememb ostalim, funkcije samo za admina)
 stili
 

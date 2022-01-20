@@ -6,6 +6,7 @@ const io = require('socket.io')(3000, {
 });
 
 io.on('connection', socket => {
+    // ADMIN REQUESTS
     // sends username of new connection to admin
     socket.on('user-connected', (name, socketId) => {
         socket.to(socketId).emit('get-user-connected', name);
@@ -28,19 +29,21 @@ io.on('connection', socket => {
         }
     })
 
+    socket.on('send-video', (blob, socketIds) => {
+        for (let socketId of socketIds) {
+            socket.to(socketId).emit('get-video', blob);
+        }
+    });
+
     socket.on('send-image', (image, socketIds) => {
         for (let socketId of socketIds) {
             socket.to(socketId).emit('get-image', image);
         }
     })
 
+
+    // GUEST REQUESTS
     socket.on('send-question', (name, socketId) => {
         socket.to(socketId).emit('get-question', name);
-    });
-
-    socket.on('send-video', (blob, socketIds) => {
-        for (let socketId of socketIds) {
-            socket.to(socketId).emit('get-video', blob);
-        }
     });
 });
