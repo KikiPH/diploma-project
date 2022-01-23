@@ -3,5 +3,12 @@
     <div *ngFor="let color of colors; index as i">
         <div id="colors[i]" class="color-button" [ngStyle]="{'background': colors[i]}" (click)="changeColor(colors[i])"></div>
     </div>
+    <span *ngFor="let type of types; index as i">
+        <input id="type" type="button" (click)="changeType(type)" value="{{ type }}">
+    </span>
+    <select id="strokeSelect" (change)="changeStroke()">
+        <option *ngFor="let stroke of strokes" [value]="stroke.size">{{ stroke.type }}</option>
+    </select>
+    <label><input type="checkbox" (change)="toggleHighlight()">highlight</label>
     <input type="button" (click)="clear()" value="Clear">
 </div>

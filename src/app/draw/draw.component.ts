@@ -8,6 +8,9 @@ import { Component, OnInit } from '@angular/core';
 export class DrawComponent implements OnInit {
 	canvas: HTMLCanvasElement;
 	context: any;
+	
+	width = 0;
+	height = 0;
 	flag = false;
 	dotFlag = false;
 
@@ -18,9 +21,17 @@ export class DrawComponent implements OnInit {
 
 	colors = ['black', 'red', 'blue', 'green', 'yellow', 'purple'];
 	color = 'black';
-	width = 0;
-	height = 0;
+	types = ['default', 'line', 'arrow', 'rectangle'];
+	type = 'default';
+	strokes = [
+		{ 'type': 'small', 'size': 2 },
+		{ 'type': 'medium', 'size': 5 },
+		{ 'type': 'large', 'size': 10 }
+	];
+	stroke = 2;
+	highlight = false;
 
+	// setup
 	ngOnInit(): void {
 		this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
 		this.context = this.canvas.getContext('2d');
@@ -44,20 +55,79 @@ export class DrawComponent implements OnInit {
 		});
 	}
 
+	// helper functions
 	changeColor(c: any) {
 		this.color = c;
 	}
 
+	changeType(t: any) {
+		this.type = t;
+	}
+
+	changeStroke() {
+		let option = document.getElementById('strokeSelect') as HTMLSelectElement;
+		let i = option.selectedIndex;
+		this.stroke = this.strokes[i].size;
+	}
+
+	toggleHighlight() {
+		if (!this.highlight) {
+			this.context.globalAlpha = 0.4;
+			this.highlight = true;
+		}
+		else {
+			this.context.globalAlpha = 1;
+			this.highlight = false;
+		}
+	}
+
+
+	// draw functions
 	draw() {
 		if (this.context) {
 			this.context.beginPath();
 			this.context.moveTo(this.prevX, this.prevY);
 			this.context.lineTo(this.currX, this.currY);
 			this.context.strokeStyle = this.color;
-			this.context.lineWidth = 2;
+			this.context.lineWidth = this.stroke;
 			this.context.stroke();
 			this.context.closePath();
 		}
+	}
+
+	drawLine() {
+		this.context.moveTo(this.prevX, this.prevY);
+		this.context.lineTo(this.currX, this.currY);
+		
+		this.context.strokeStyle = this.color;
+		this.context.lineWidth = this.stroke;
+		this.context.stroke();
+	}
+
+	drawArrow() {
+		let headLength = 10;
+		let dX = this.currX - this.prevX;
+		let dY = this.currY - this.prevY;
+		let angle = Math.atan2(dY, dX);
+
+		this.context.moveTo(this.prevX, this.prevY);
+		this.context.lineTo(this.currX, this.currY);
+		this.context.lineTo(this.currX - headLength * Math.cos(angle - Math.PI / 6), this.currY - headLength * Math.sin(angle - Math.PI / 6));
+		this.context.moveTo(this.currX, this.currY);
+		this.context.lineTo(this.currX - headLength * Math.cos(angle + Math.PI / 6), this.currY - headLength * Math.sin(angle + Math.PI / 6));
+		
+		this.context.strokeStyle = this.color;
+		this.context.lineWidth = this.stroke;
+		this.context.stroke();
+	}
+
+	drawRectangle() {
+		let dX = this.currX - this.prevX;
+		let dY = this.currY - this.prevY;
+		
+		this.context.strokeStyle = this.color;
+		this.context.lineWidth = this.stroke;
+		this.context.strokeRect(this.prevX, this.prevY, dX, dY);
 	}
 
 	clear() {
@@ -78,21 +148,48 @@ export class DrawComponent implements OnInit {
 			if (this.dotFlag && this.context) {
 				this.context.beginPath();
 				this.context.fillStyle = this.color;
-				this.context.fillRect(this.currX, this.currY, 2, 2);
+				this.context.fillRect(this.currX, this.currY, this.stroke, this.stroke);
 				this.context.closePath();
 				this.dotFlag = false;
 			}
 		}
+
 		if (res == 'up' || res == "out") {
-			this.flag = false;
-		}
-		if (res == 'move') {
-			if (this.flag) {
+			// other types (draw from mouse down position to mouse up position)
+			if (res == 'up' && this.type != 'default' && this.type != 'highlight') {
 				this.prevX = this.currX;
 				this.prevY = this.currY;
 				this.currX = e.clientX - this.canvas.offsetLeft;
 				this.currY = e.clientY - this.canvas.offsetTop;
-				this.draw();
+
+				switch (this.type) {
+					case 'line':
+						this.drawLine();
+						break;
+						
+					case 'arrow':
+						this.drawArrow();
+						break;
+
+					case 'rectangle':
+						this.drawRectangle();
+						break;
+				}
+			}
+
+			this.flag = false;
+		}
+
+		if (res == 'move') {
+			// default type (draw every movement)
+			if (this.type == 'default') {
+				if (this.flag) {
+					this.prevX = this.currX;
+					this.prevY = this.currY;
+					this.currX = e.clientX - this.canvas.offsetLeft;
+					this.currY = e.clientY - this.canvas.offsetTop;
+					this.draw();
+				}
 			}
 		}
 	}
