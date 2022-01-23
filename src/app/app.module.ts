@@ -6,20 +6,23 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { QuizBuilderComponent } from './quiz-builder/quiz-builder.component';
 import { RoomComponent } from './room/room.component';
+import { DrawComponent } from './draw/draw.component';
 
 @NgModule({
 	declarations: [
 		AppComponent,
 		HomeComponent,
     	QuizBuilderComponent,
-		RoomComponent
+		RoomComponent,
+  		DrawComponent
 	],
 	imports: [
 		BrowserModule,
 		AppRoutingModule
 	],
 	exports: [
-		HomeComponent
+		HomeComponent,
+		DrawComponent
 	],
 	providers: [],
 	bootstrap: [AppComponent]

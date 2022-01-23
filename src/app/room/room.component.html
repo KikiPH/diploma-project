@@ -4,21 +4,24 @@
         <input class="button" type="file" (change)="clear(); upload($event)" value="Upload file"><br>
         <label><input type="checkbox" (change)="toggleShareScreen()" checked>Share screen</label>
         <label><input type="checkbox" (change)="toggleSendFile()" checked>Send file</label>
+        <label><input type="checkbox" (change)="toggleDraw()">Draw</label>
         <!--input class="button" type="file" (change)="uploadQuiz($event)" value="Upload quiz"-->
         <!--input class="button" type="file" (change)="uploadFile($event)" value="Upload PDF/PPT"-->
     </div>
 
     <br>
-    <div id="display" class="display">
+    <!--- if admin then overlay the file and the canvas // if guest then show file and stream side by side -->
+    <div id="display" [ngStyle]="{'display': admin ? 'inline-block': 'flex'}">
         <video *ngIf="!admin" id="viewVideo" class="display-panel" width="800" height="600" autoplay muted></video>
-        <div id="viewFile" class="display-panel"></div>
+        <div id="viewFile" [ngStyle]="{'position': draw ? 'absolute' : '', 'flex': !admin && 1}"></div>
+        <draw *ngIf="draw"></draw>
     </div>
 
     <div class="questions-container">
         <div *ngFor="let question of quiz; index as i">
             <div class="question">
                 <h3>
-                    #{{ i+1 }}
+                    #{{ i + 1 }}
                     {{ question.title }}
                 </h3>
                 <div *ngFor="let answer of question.answers; index as j" [ngStyle]="{'color': answer.correct ? 'green' : 'red'}">

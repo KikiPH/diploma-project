@@ -18,6 +18,7 @@ export class RoomComponent implements OnInit {
 	quiz = [] as any;
 	shareScreen = true;
 	sendFile = true;
+	draw = false;
 
 	ngOnInit() {
 		// COMMON REQUESTS
@@ -255,5 +256,9 @@ export class RoomComponent implements OnInit {
 
 	toggleSendFile() {
 		this.sendFile = !this.sendFile;
+	}
+
+	toggleDraw() {
+		this.draw = !this.draw;
 	}
 }

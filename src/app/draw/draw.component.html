@@ -1,0 +1,7 @@
+<div>
+    <canvas id="canvas" class="canvas" width="800" height="600"></canvas>
+    <div *ngFor="let color of colors; index as i">
+        <div id="colors[i]" class="color-button" [ngStyle]="{'background': colors[i]}" (click)="changeColor(colors[i])"></div>
+    </div>
+    <input type="button" (click)="clear()" value="Clear">
+</div>

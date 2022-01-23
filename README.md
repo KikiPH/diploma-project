@@ -31,10 +31,11 @@ crop stream to div size
 on new upload -> clear timeout
 kaj z image? a se rabi? -> lahko ostane podprto ampak se zdruzi z send-file (case jpeg/png)
 
+risanje -> črta, okvir, puščica, highlight, (text?, radirka?)
+
 kviz za guest -> če ni admin potem naredi formo iz prejetega kviza (in pošlji odgovore)
 v room dodaj pošiljanje posameznega vprašanja (in statistiko odgovorov, samo za admina)
 
-risanje po pdf (in prikaz sprememb ostalim, funkcije samo za admina)
 stili
 
 EXTRA:
