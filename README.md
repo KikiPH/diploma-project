@@ -27,21 +27,38 @@ APP LAYOUT:
     BACK
 
 TO-DO:
-video lag fix
-crop stream to div size
-on new upload -> clear timeout
-kaj z image? a se rabi? -> lahko ostane podprto ampak se zdruzi z send-file (case jpeg/png)
+0.
+kviz za guest -> onsubmit pošlji odgovore (socket), zakleni kviz, adminu prikaži statistiko
 
+1.
+admin console 1 -> all users in room
+admin console 2 -> status messages (uploaded quiz, stream running/paused, _ joined/left/has a question)
+
+2.
+save quiz -> name filea
+------
+3.
+orodna vrstica -> upload (share file), stream commands (start/stop/pause/continue), disconnect
+
+4.
 risanje -> prvi dot (arrows?)
 
-kviz za guest -> če ni admin potem naredi formo iz prejetega kviza (in pošlji odgovore)
+5.
+stili
+------
+6.
 v room dodaj pošiljanje posameznega vprašanja (in statistiko odgovorov, samo za admina)
 
-stili
+7.
+video lag fix
+crop stream to div size
+stream -> start/pause/continue/end
+on new upload -> clear timeout
+kaj z image? a se rabi? -> lahko ostane podprto ampak se zdruzi z send-file (case jpeg/png)
 
 IMPROVEMENTS:
 boljša rešitev za cors kot cors origin * (ni varno)
 upload in fileDisplay -> ne samo pdf/img ampak tudi ppt/odt/word (ipd.)
 shranjevanje vseh naloženih datotek v temp dir, ki je prikazan kot quick select ob strani
-stream -> start/pause/continue/end
+dodajanje slike k vprašanju
 risanje -> text field

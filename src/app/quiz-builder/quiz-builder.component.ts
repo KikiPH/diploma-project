@@ -14,7 +14,8 @@ export class QuizBuilderComponent {
 				{ text: 'B', correct: false },
 				{ text: 'C', correct: true },
 				{ text: 'D', correct: false }
-			]
+			],
+			type: '2'
 		}
 	];*/
 	questions = [] as any;
@@ -34,6 +35,15 @@ export class QuizBuilderComponent {
 		let answer4 = (<HTMLInputElement>document.getElementById('add-answer-4')).value;
 		let answer4Correct = (<HTMLInputElement>document.getElementById('toggle-answer-4')).checked;
 
+		let correct = 0;
+		correct += answer1Correct ? 1 : 0;
+		correct += answer2Correct ? 1 : 0;
+		correct += answer3Correct ? 1 : 0;
+		correct += answer4Correct ? 1 : 0;
+		
+		// question type (1 - essay, 2 - single choice, 3 - multiple choice)
+		let type = correct == 0 ? 1 : correct == 1 ? 2 : 3;
+
 		let question = {
 			title: title,
 			answers: [
@@ -41,7 +51,8 @@ export class QuizBuilderComponent {
 				{ text: answer2, correct: answer2Correct },
 				{ text: answer3, correct: answer3Correct },
 				{ text: answer4, correct: answer4Correct },
-			]
+			],
+			type: type
 		};
 		this.questions.push(question);
 
@@ -70,8 +81,8 @@ export class QuizBuilderComponent {
 		} else {
 			const reader = new FileReader();
 			reader.onloadend = (e) => {
-				// handle data processing
 
+				// handle data processing
 				let content: string = e.target?.result?.toString()!;
 				let quiz = JSON.parse(content);
 				this.questions = quiz;
@@ -79,6 +90,4 @@ export class QuizBuilderComponent {
 			reader.readAsText(event.target.files[0]);
 		}
 	}
-
-	// save quiz -> saves current quiz to cookies -> reads and displays on host
 }

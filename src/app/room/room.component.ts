@@ -216,6 +216,10 @@ export class RoomComponent implements OnInit {
 		this.socket.emit('send-question', this.name, this.adminSocketId);
 	}
 
+	submitQuiz() {
+		console.log("Submitted");
+	}
+
 	leaveRoom() {
 		// remove user from connected users in localStorage
 		let room = localStorage.getItem(`room${this.roomId}`);

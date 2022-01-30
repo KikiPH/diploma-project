@@ -17,7 +17,8 @@
         <draw *ngIf="draw"></draw>
     </div>
 
-    <div class="questions-container">
+    <!-- quiz display for admin (with statistics) -->
+    <div *ngIf="admin" class="questions-container">
         <div *ngFor="let question of quiz; index as i">
             <div class="question">
                 <h3>
@@ -28,6 +29,40 @@
                     {{ answer.text }}
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- quiz display for guests -->
+    <div *ngIf="!admin" class="questions-container">
+        <div *ngIf="quiz.length > 0" id="quiz-form" class="quiz-form">
+            <div *ngFor="let question of quiz; index as i">
+                <div class="question">
+                    <h3>
+                        #{{ i + 1 }}
+                        {{ question.title }}
+                    </h3>
+
+                    <!-- essay question -->
+                    <div *ngIf="question.type == 1">
+                        <input type="text" size="40">
+                    </div>
+
+                    <!-- single choice question -->
+                    <div *ngIf="question.type == 2">
+                        <div *ngFor="let answer of question.answers; index as j">
+                            <input *ngIf="answer.text" type="radio" name="{{ i + 1 }}">{{ answer.text }}
+                        </div>
+                    </div>
+
+                    <!-- multiple choice question -->
+                    <div *ngIf="question.type == 3">
+                        <div *ngFor="let answer of question.answers; index as j">
+                            <input *ngIf="answer.text" type="checkbox">{{ answer.text }}
+                        </div>
+                    </div>
+                </div>
+            </div><br>
+            <input class="button" type="button" (click)="submitQuiz()" value="Submit">
         </div>
     </div>
 
