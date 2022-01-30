@@ -91,6 +91,13 @@ export class RoomComponent implements OnInit {
 			}, 3000);
 		})
 
+		this.socket.on('get-answers', (name, answers) => {
+			// TODO save answers to this.answers
+			// TOOD display statistics on admin quiz display
+			console.log(name)
+			console.log(answers)
+		})
+
 		// GUEST REQUESTS
 		this.socket.on('get-quiz', quiz => {
 			this.quiz = quiz;
@@ -217,7 +224,32 @@ export class RoomComponent implements OnInit {
 	}
 
 	submitQuiz() {
-		console.log("Submitted");
+		let quizAnswers = [];
+		for (let i = 0; i < this.quiz.length; i++) {
+
+			// essay
+			if (this.quiz[i].type == 1) {
+				let question = document.getElementsByClassName(`question${i + 1}`);
+				let answer = question[0] as HTMLInputElement;
+				quizAnswers.push([answer.value]);
+			}
+
+			// single or multiple choice
+			else {
+				let question = document.getElementsByClassName(`question${i + 1}`);
+				let options = question;
+				let answers = [];
+
+				for (let j = 0; j < options.length; j++) {
+					let option = options[j] as HTMLInputElement;
+					if (option.checked) {
+						answers.push(option.value);
+					}
+				}
+				quizAnswers.push(answers);
+			}
+		}
+		this.socket.emit('send-answers', this.name, quizAnswers, this.adminSocketId);
 	}
 
 	leaveRoom() {

@@ -44,20 +44,20 @@
 
                     <!-- essay question -->
                     <div *ngIf="question.type == 1">
-                        <input type="text" size="40">
+                        <input type="text" size="60" class="question{{ i + 1 }}">
                     </div>
 
                     <!-- single choice question -->
                     <div *ngIf="question.type == 2">
                         <div *ngFor="let answer of question.answers; index as j">
-                            <input *ngIf="answer.text" type="radio" name="{{ i + 1 }}">{{ answer.text }}
+                            <input *ngIf="answer.text" class="question{{ i + 1 }}" type="radio" name="{{ i + 1 }}" value="{{ answer.text }}">{{ answer.text }}
                         </div>
                     </div>
 
                     <!-- multiple choice question -->
                     <div *ngIf="question.type == 3">
                         <div *ngFor="let answer of question.answers; index as j">
-                            <input *ngIf="answer.text" type="checkbox">{{ answer.text }}
+                            <input *ngIf="answer.text" class="question{{ i + 1 }}" type="checkbox" value="{{ answer.text }}">{{ answer.text }}
                         </div>
                     </div>
                 </div>

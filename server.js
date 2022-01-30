@@ -46,4 +46,8 @@ io.on('connection', socket => {
     socket.on('send-question', (name, socketId) => {
         socket.to(socketId).emit('get-question', name);
     });
+
+    socket.on('send-answers', (name, answers, socketId) => {
+        socket.to(socketId).emit('get-answers', name, answers);
+    })
 });

@@ -28,14 +28,12 @@ APP LAYOUT:
 
 TO-DO:
 0.
-kviz za guest -> onsubmit pošlji odgovore (socket), zakleni kviz, adminu prikaži statistiko
+on submit -> zakleni kviz, adminu prikaži statistiko
 
 1.
 admin console 1 -> all users in room
 admin console 2 -> status messages (uploaded quiz, stream running/paused, _ joined/left/has a question)
 
-2.
-save quiz -> name filea
 ------
 3.
 orodna vrstica -> upload (share file), stream commands (start/stop/pause/continue), disconnect
