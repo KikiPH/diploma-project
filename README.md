@@ -27,25 +27,25 @@ APP LAYOUT:
     BACK
 
 TO-DO:
-0.
-on submit -> zakleni kviz, adminu prikaži statistiko
-
 1.
+upload PDF then upload quiz -> stop streaming (also hide shared PDF)
+
+2.
 admin console 1 -> all users in room
 admin console 2 -> status messages (uploaded quiz, stream running/paused, _ joined/left/has a question)
 
-------
 3.
-orodna vrstica -> upload (share file), stream commands (start/stop/pause/continue), disconnect
-
-4.
 risanje -> prvi dot (arrows?)
+------
+4.
+orodna vrstica -> upload (share file), stream commands (start/stop/pause/continue), disconnect
 
 5.
 stili
 ------
 6.
 v room dodaj pošiljanje posameznega vprašanja (in statistiko odgovorov, samo za admina)
+on send single question -> pause stream, show question, wait for answers, close question viewer, unpause stream
 
 7.
 video lag fix
@@ -60,3 +60,4 @@ upload in fileDisplay -> ne samo pdf/img ampak tudi ppt/odt/word (ipd.)
 shranjevanje vseh naloženih datotek v temp dir, ki je prikazan kot quick select ob strani
 dodajanje slike k vprašanju
 risanje -> text field
+razdrobitev kode -> quiz-viewer component, video-component, ...

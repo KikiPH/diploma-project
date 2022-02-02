@@ -16,8 +16,10 @@ export class RoomComponent implements OnInit {
 	userSocketId = '';
 
 	quiz = [] as any;
+	answers = [] as any;
 	shareScreen = true;
 	sendFile = true;
+	video = false; // toggle video element visibility
 	draw = false;
 
 	ngOnInit() {
@@ -33,6 +35,7 @@ export class RoomComponent implements OnInit {
 				this.adminSocketId = this.socket.id;
 				this.userSocketId = this.socket.id;
 			}
+
 			// if joining a room, get admin socket id
 			else {
 				this.adminSocketId = this.getAdmin();
@@ -92,15 +95,21 @@ export class RoomComponent implements OnInit {
 		})
 
 		this.socket.on('get-answers', (name, answers) => {
-			// TODO save answers to this.answers
-			// TOOD display statistics on admin quiz display
-			console.log(name)
-			console.log(answers)
+			for (let i = 0; i < answers.length; i++) {
+				this.answers[i].push(answers[i]);
+			}
 		})
 
 		// GUEST REQUESTS
 		this.socket.on('get-quiz', quiz => {
 			this.quiz = quiz;
+			
+			// enable quiz interaction
+			let quizContainer = document.getElementById('quiz-form');
+			quizContainer!.style.pointerEvents = 'auto';
+
+			let submitButton = document.getElementById('quiz-submit');
+			submitButton!.style.backgroundColor = '#4CAF50';
 		});
 
 		this.socket.on('get-pdf', pdf => {
@@ -114,6 +123,8 @@ export class RoomComponent implements OnInit {
 		});
 
 		this.socket.on('get-video', arrayBuffer => {
+			this.video = true; // show video field
+
 			let blob = new Blob([arrayBuffer]);
 			let videoDisplay = document.getElementById('viewVideo') as HTMLVideoElement;
 			videoDisplay.src = window.URL.createObjectURL(blob);
@@ -161,9 +172,16 @@ export class RoomComponent implements OnInit {
 		};
 		reader.readAsText(event.target.files[0]);
 
-		// send quiz to all connected users
+		// wait until quiz is initialized
 		setTimeout(() => {
+			
+			// send quiz to all connected users
 			this.socket.emit('send-quiz', this.quiz, this.getUsers());
+
+			// set answers array
+			for (let i = 0; i < this.quiz.length; i++) {
+				this.answers.push([]);
+			}
 		}, 100);
 	}
 
@@ -250,6 +268,13 @@ export class RoomComponent implements OnInit {
 			}
 		}
 		this.socket.emit('send-answers', this.name, quizAnswers, this.adminSocketId);
+
+		// disable quiz interaction after submitting
+		let quizContainer = document.getElementById('quiz-form');
+		quizContainer!.style.pointerEvents = 'none';
+
+		let submitButton = document.getElementById('quiz-submit');
+		submitButton!.style.backgroundColor = 'rgb(150, 150, 150)';
 	}
 
 	leaveRoom() {
@@ -296,5 +321,34 @@ export class RoomComponent implements OnInit {
 
 	toggleDraw() {
 		this.draw = !this.draw;
+	}
+
+	getAnswerPercentage(questionId: number, answerId: number) {
+		// if no one submitted their quiz answers do nothing
+		if (!this.answers[questionId] || this.answers[questionId].length == 0) return '';
+
+		let currentAnswer = this.quiz[questionId].answers[answerId].text;
+		let count = 0;
+
+		// go over all submitted answers (users)
+		// only check answers for current question
+		for (let userAnswers of this.answers[questionId]) {
+
+			// check all answers from user (multipick questions can have multiple options checked)
+			for (let answer of userAnswers) {
+
+				// count how many users picked this answer option
+				if (answer == currentAnswer) {
+					count += 1;
+				}
+			}
+		}
+
+		// calculate percentage
+		let numUsers = this.answers[questionId].length;
+		let percentage = (count * 100) / numUsers;
+
+		// return pick percentage of this answer option
+		return `${percentage}% [${count}/${numUsers}]`;
 	}
 }

@@ -12,7 +12,7 @@
     <br>
     <!--- if admin then overlay the file and the canvas // if guest then show file and stream side by side -->
     <div id="display" [ngStyle]="{'display': admin ? 'inline-block': 'flex'}">
-        <video *ngIf="!admin" id="viewVideo" class="display-panel" width="800" height="600" autoplay muted></video>
+        <video *ngIf="!admin && video" id="viewVideo" class="display-panel" width="800" height="600" autoplay muted></video>
         <div id="viewFile" [ngStyle]="{'position': draw ? 'absolute' : '', 'flex': !admin && 1}"></div>
         <draw *ngIf="draw"></draw>
     </div>
@@ -25,8 +25,17 @@
                     #{{ i + 1 }}
                     {{ question.title }}
                 </h3>
-                <div *ngFor="let answer of question.answers; index as j" [ngStyle]="{'color': answer.correct ? 'green' : 'red'}">
-                    {{ answer.text }}
+
+                <div *ngIf="question.type != 1">
+                    <div *ngFor="let answer of question.answers; index as j" [ngStyle]="{'color': answer.correct ? 'green' : 'red'}">
+                        {{ answer.text }} {{ getAnswerPercentage(i, j) }}
+                    </div>
+                </div>
+
+                <div *ngIf="question.type == 1">
+                    <div *ngFor="let answer of answers[i]; index as j">
+                        {{ answer }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -62,7 +71,7 @@
                     </div>
                 </div>
             </div><br>
-            <input class="button" type="button" (click)="submitQuiz()" value="Submit">
+            <input id="quiz-submit" class="button" type="button" (click)="submitQuiz()" value="Submit">
         </div>
     </div>
 
