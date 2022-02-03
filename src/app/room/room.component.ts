@@ -102,6 +102,7 @@ export class RoomComponent implements OnInit {
 
 		// GUEST REQUESTS
 		this.socket.on('get-quiz', quiz => {
+			this.clear();
 			this.quiz = quiz;
 			
 			// enable quiz interaction
@@ -113,6 +114,7 @@ export class RoomComponent implements OnInit {
 		});
 
 		this.socket.on('get-pdf', pdf => {
+			this.clear();
 			let fileDisplay = document.getElementById('viewFile');
 			let blob = new Blob([pdf], { type: 'application/pdf' });
 			let reader = new FileReader();
@@ -133,6 +135,7 @@ export class RoomComponent implements OnInit {
 		});
 		
 		this.socket.on('get-image', image => {
+			this.clear();
 			let fileDisplay = document.getElementById('viewFile');
 			let blob = new Blob([image]);
 			let reader = new FileReader();
@@ -153,6 +156,8 @@ export class RoomComponent implements OnInit {
 
 	// ADMIN FUNCTIONS
 	upload(event: any) {
+		this.clear();
+
 		let fileType = event.target.files[0].type;
 		if (fileType == 'application/json') {
 			this.uploadQuiz(event);
@@ -295,6 +300,8 @@ export class RoomComponent implements OnInit {
 		if (viewVideo) viewVideo.innerHTML = "";
 		let viewFile = document.getElementById('viewFile');
 		if (viewFile) viewFile.innerHTML = "";
+		this.video = false;
+		this.draw = false;
 	}
 
 	// returns admins socket id

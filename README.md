@@ -29,17 +29,20 @@ APP LAYOUT:
 TO-DO:
 1.
 upload PDF then upload quiz -> stop streaming (also hide shared PDF)
+-> stop streaming (implement with action bar)
 
 2.
-admin console 1 -> all users in room
-admin console 2 -> status messages (uploaded quiz, stream running/paused, _ joined/left/has a question)
-
-3.
-risanje -> prvi dot (arrows?)
-------
-4.
 orodna vrstica -> upload (share file), stream commands (start/stop/pause/continue), disconnect
 
+send question, upload quiz, upload file, share file (UPLOAD)
+stream, pause/continue, stop, draw (STREAM) (pause/continue, draw -> toggle)
+
+ikone + on hover
+
+3.
+admin console 1 -> all users in room
+admin console 2 -> status messages (uploaded quiz, stream running/paused, _ joined/left/has a question)
+------
 5.
 stili
 ------

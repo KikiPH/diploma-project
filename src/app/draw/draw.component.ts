@@ -12,7 +12,6 @@ export class DrawComponent implements OnInit {
 	width = 0;
 	height = 0;
 	flag = false;
-	dotFlag = false;
 
 	prevX = 0;
 	prevY = 0;
@@ -96,12 +95,14 @@ export class DrawComponent implements OnInit {
 	}
 
 	drawLine() {
+		this.context.beginPath();
 		this.context.moveTo(this.prevX, this.prevY);
 		this.context.lineTo(this.currX, this.currY);
 		
 		this.context.strokeStyle = this.color;
 		this.context.lineWidth = this.stroke;
 		this.context.stroke();
+		this.context.closePath();
 	}
 
 	drawArrow() {
@@ -110,15 +111,31 @@ export class DrawComponent implements OnInit {
 		let dY = this.currY - this.prevY;
 		let angle = Math.atan2(dY, dX);
 
+		this.currX -= Math.cos(angle) * ((this.stroke * 1.15));
+        this.currY -= Math.sin(angle) * ((this.stroke * 1.15));
+		angle = Math.atan2(dY, dX);
+
+		this.context.beginPath();
 		this.context.moveTo(this.prevX, this.prevY);
 		this.context.lineTo(this.currX, this.currY);
-		this.context.lineTo(this.currX - headLength * Math.cos(angle - Math.PI / 6), this.currY - headLength * Math.sin(angle - Math.PI / 6));
-		this.context.moveTo(this.currX, this.currY);
-		this.context.lineTo(this.currX - headLength * Math.cos(angle + Math.PI / 6), this.currY - headLength * Math.sin(angle + Math.PI / 6));
-		
 		this.context.strokeStyle = this.color;
 		this.context.lineWidth = this.stroke;
 		this.context.stroke();
+		
+		// draw top of arrow as a triangle starting from the tip
+		this.context.beginPath();
+		this.context.moveTo(this.currX, this.currY);
+		this.context.lineTo(this.currX - headLength * Math.cos(angle - Math.PI/6), this.currY - headLength * Math.sin(angle - Math.PI/6));
+		this.context.lineTo(this.currX - headLength * Math.cos(angle + Math.PI/6), this.currY - headLength * Math.sin(angle + Math.PI/6));
+		this.context.lineTo(this.currX, this.currY);
+		this.context.lineTo(this.currX - headLength * Math.cos(angle - Math.PI/6), this.currY - headLength * Math.sin(angle - Math.PI/6));
+
+		this.context.strokeStyle = this.color;
+		this.context.lineWidth = this.stroke;
+		this.context.stroke();
+		this.context.fillStyle = this.color;
+		this.context.fill();
+		this.context.closePath();
 	}
 
 	drawRectangle() {
@@ -144,14 +161,11 @@ export class DrawComponent implements OnInit {
 			this.currY = e.clientY - this.canvas.offsetTop;
 
 			this.flag = true;
-			this.dotFlag = true;
-			if (this.dotFlag && this.context) {
-				this.context.beginPath();
-				this.context.fillStyle = this.color;
-				this.context.fillRect(this.currX, this.currY, this.stroke, this.stroke);
-				this.context.closePath();
-				this.dotFlag = false;
-			}
+			this.context.beginPath();
+			this.context.fillStyle = this.color;
+			this.context.arc(this.currX, this.currY, this.stroke/2, 0, 2*Math.PI); // draw dot on mouse down
+			this.context.fill();
+			this.context.closePath();
 		}
 
 		if (res == 'up' || res == "out") {
