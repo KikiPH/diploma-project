@@ -7,6 +7,7 @@ import { HomeComponent } from './home/home.component';
 import { QuizBuilderComponent } from './quiz-builder/quiz-builder.component';
 import { RoomComponent } from './room/room.component';
 import { DrawComponent } from './draw/draw.component';
+import { AdminConsoleComponent } from './admin-console/admin-console.component';
 
 @NgModule({
 	declarations: [
@@ -14,7 +15,8 @@ import { DrawComponent } from './draw/draw.component';
 		HomeComponent,
     	QuizBuilderComponent,
 		RoomComponent,
-  		DrawComponent
+  		DrawComponent,
+    	AdminConsoleComponent
 	],
 	imports: [
 		BrowserModule,
@@ -22,7 +24,8 @@ import { DrawComponent } from './draw/draw.component';
 	],
 	exports: [
 		HomeComponent,
-		DrawComponent
+		DrawComponent,
+    	AdminConsoleComponent
 	],
 	providers: [],
 	bootstrap: [AppComponent]

@@ -1,6 +1,6 @@
 <div class="body">
     <div *ngIf="admin">
-        <div id="admin-console" class="admin-console"></div>
+        <admin-console [socket]="socket"></admin-console>
         <input class="button" type="file" (change)="clear(); upload($event)" value="Upload file"><br>
         <label><input type="checkbox" (change)="toggleShareScreen()" checked>Share screen</label>
         <label><input type="checkbox" (change)="toggleSendFile()" checked>Send file</label>
@@ -12,7 +12,7 @@
     <br>
     <!--- if admin then overlay the file and the canvas // if guest then show file and stream side by side -->
     <div id="display" [ngStyle]="{'display': admin ? 'inline-block': 'flex'}">
-        <video *ngIf="!admin && video" id="viewVideo" class="display-panel" width="800" height="600" autoplay muted></video>
+        <video *ngIf="!admin && video" id="viewVideo" class="display-panel" width="756" height="600" autoplay muted></video>
         <div id="viewFile" [ngStyle]="{'position': draw ? 'absolute' : '', 'flex': !admin && 1}"></div>
         <draw *ngIf="draw"></draw>
     </div>

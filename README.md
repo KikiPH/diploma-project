@@ -6,31 +6,8 @@ Run `ng g component component-name` to generate a new component.
 
 * - if it returns an error try installing nodemon with 'npm install -g nodemon'
 
-APP LAYOUT:
-    JOIN
-        play quiz
-
-    HOST
-        CREATE QUIZ
-            QUIZ BUILDER (2-4 answers, text box)
-            SAVE (download)
-            UPLOAD (edit existing quiz)
-            BACK
-
-        START ROOM
-            UPLOAD (quiz, pdf, img - on upload remove previous file)
-                quiz (interactive with guests, show statistics to admin)
-                files (toggle draw (free, line, arrow, square, highlight, undo, clear))
-            SEND QUESTION (sends single question to see how clear the current topic is)
-            UNCLEAR (for student to signal to the teacher that they might have a question)
-            EXIT (stop/leave room)
-    BACK
 
 TO-DO:
-1.
-upload PDF then upload quiz -> stop streaming (also hide shared PDF)
--> stop streaming (implement with action bar)
-
 2.
 orodna vrstica -> upload (share file), stream commands (start/stop/pause/continue), disconnect
 
@@ -40,9 +17,8 @@ stream, pause/continue, stop, draw (STREAM) (pause/continue, draw -> toggle)
 ikone + on hover
 
 3.
-admin console 1 -> all users in room
-admin console 2 -> status messages (uploaded quiz, stream running/paused, _ joined/left/has a question)
-------
+admin console 2 -> status messages (uploaded quiz, stream running/paused)
+
 5.
 stili
 ------
@@ -51,7 +27,7 @@ v room dodaj pošiljanje posameznega vprašanja (in statistiko odgovorov, samo z
 on send single question -> pause stream, show question, wait for answers, close question viewer, unpause stream
 
 7.
-video lag fix
+video lag fix (oncanplay)
 crop stream to div size
 stream -> start/pause/continue/end
 on new upload -> clear timeout
@@ -64,3 +40,4 @@ shranjevanje vseh naloženih datotek v temp dir, ki je prikazan kot quick select
 dodajanje slike k vprašanju
 risanje -> text field
 razdrobitev kode -> quiz-viewer component, video-component, ...
+shranjevanje sob -> namesto localStorage na server.js rooms = { room: admin, [users] }

@@ -59,41 +59,6 @@ export class RoomComponent implements OnInit {
 		});
 
 		// ADMIN REQUESTS
-		this.socket.on('get-user-connected', name => {
-			const div = document.createElement('div');
-			div.textContent = `${name} connected`;
-			div.style.paddingLeft = '5px';
-
-			let adminConsole = document.getElementById('admin-console');
-			adminConsole?.append(div);
-		});
-
-		this.socket.on('get-user-disconnected', name=> {
-			const div = document.createElement('div');
-			div.textContent = `${name} disconnected`;
-			div.style.paddingLeft = '5px';
-
-			let adminConsole = document.getElementById('admin-console');
-			adminConsole?.append(div);
-		});
-
-		this.socket.on('get-question', name => {
-			const div = document.createElement('div');
-			let id = new Date().getTime().toString();
-			div.id = id;
-			div.textContent = `${name} has a question`;
-			div.style.paddingLeft = '5px';
-
-			let adminConsole = document.getElementById('admin-console');
-			adminConsole?.append(div);
-
-			// clear message after 3 seconds
-			setInterval(() => {
-				let message = document.getElementById(id);
-				message!.innerHTML = '';
-			}, 3000);
-		})
-
 		this.socket.on('get-answers', (name, answers) => {
 			for (let i = 0; i < answers.length; i++) {
 				this.answers[i].push(answers[i]);
@@ -152,6 +117,16 @@ export class RoomComponent implements OnInit {
 			console.log('Admin:', admin);
 			console.log('Users:', users);
 		}, 3000);*/
+
+		// on tab/browser close
+		window.onbeforeunload = () => {
+			if(this.admin) {
+				this.stopRoom();
+			}
+			else {
+				this.leaveRoom();
+			}
+		}
 	}
 
 	// ADMIN FUNCTIONS
