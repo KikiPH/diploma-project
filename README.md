@@ -8,6 +8,15 @@ Run `ng g component component-name` to generate a new component.
 
 
 TO-DO:
+on new upload -> clear timeout -> if this.sharescreen emit(video)
+
+1.
+WEBRTS
+video lag fix (oncanplay)
+crop stream to div size
+stream -> start/pause/continue/end
+kaj z image? a se rabi? -> lahko ostane podprto ampak se zdruzi z send-file (case jpeg/png)
+
 2.
 orodna vrstica -> upload (share file), stream commands (start/stop/pause/continue), disconnect
 
@@ -18,20 +27,13 @@ ikone + on hover
 
 3.
 admin console 2 -> status messages (uploaded quiz, stream running/paused)
+=============================
+4.
+stili (admin console, question builder (add hint for question types), menu, question viewer)
 
 5.
-stili
-------
-6.
 v room dodaj pošiljanje posameznega vprašanja (in statistiko odgovorov, samo za admina)
 on send single question -> pause stream, show question, wait for answers, close question viewer, unpause stream
-
-7.
-video lag fix (oncanplay)
-crop stream to div size
-stream -> start/pause/continue/end
-on new upload -> clear timeout
-kaj z image? a se rabi? -> lahko ostane podprto ampak se zdruzi z send-file (case jpeg/png)
 
 IMPROVEMENTS:
 boljša rešitev za cors kot cors origin * (ni varno)
@@ -40,4 +42,7 @@ shranjevanje vseh naloženih datotek v temp dir, ki je prikazan kot quick select
 dodajanje slike k vprašanju
 risanje -> text field
 razdrobitev kode -> quiz-viewer component, video-component, ...
-shranjevanje sob -> namesto localStorage na server.js rooms = { room: admin, [users] }
+
+socketId -> pass to router component (not in url)
+start-room -> don't simulate click?
+admin-console timeout -> pass to createElement, also remove instead of emptying content

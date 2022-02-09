@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { io } from 'socket.io-client';
 
 @Component({
@@ -6,14 +6,12 @@ import { io } from 'socket.io-client';
 	templateUrl: './room.component.html',
 	styleUrls: ['./room.component.less']
 })
-export class RoomComponent implements OnInit {
+export class RoomComponent {
 	socket = io('http://localhost:3000');
 
 	roomId = window.location.pathname.split('/')[2];
 	admin = window.location.href.indexOf('admin') > -1;
-	name = window.location.href.split('?name=')[1];
-	adminSocketId = '';
-	userSocketId = '';
+	name = window.location.href.split('&name=')[1];
 
 	quiz = [] as any;
 	answers = [] as any;
@@ -23,39 +21,17 @@ export class RoomComponent implements OnInit {
 	draw = false;
 
 	ngOnInit() {
+		// set socket id
+		let params = window.location.href.split('?socket=')[1];
+		this.socket.id = params.split('&name=')[0];
+
 		// COMMON REQUESTS
 		this.socket.on('connect', () => {
-
-			// if new room save admins socket id to it's corresponding room in localStorage
-			if (this.admin) {
-				let room = localStorage.getItem(`room${this.roomId}`);
-				room = `${this.socket.id}`;
-				localStorage.setItem(`room${this.roomId}`, room!);
-
-				this.adminSocketId = this.socket.id;
-				this.userSocketId = this.socket.id;
-			}
-
-			// if joining a room, get admin socket id
-			else {
-				this.adminSocketId = this.getAdmin();
-				this.userSocketId = this.socket.id;
-
-				// and append your id to rooms users list
-				let room = localStorage.getItem(`room${this.roomId}`);
-				let users = room!.split(':')[1];
-				if (users) {
-					room += `,${this.userSocketId}`;
-				}
-				else {
-					room += `:${this.userSocketId}`;
-				}
-
-				localStorage.setItem(`room${this.roomId}`, room!);
-			}
+			// send basic data to server
+			this.socket.emit('join-room', this.roomId, this.name);
 			
 			// send who connected to admin socket
-			this.socket.emit('user-connected', this.name, this.adminSocketId);
+			this.socket.emit('user-connected', this.roomId);
 		});
 
 		// ADMIN REQUESTS
@@ -63,7 +39,7 @@ export class RoomComponent implements OnInit {
 			for (let i = 0; i < answers.length; i++) {
 				this.answers[i].push(answers[i]);
 			}
-		})
+		});
 
 		// GUEST REQUESTS
 		this.socket.on('get-quiz', quiz => {
@@ -110,14 +86,6 @@ export class RoomComponent implements OnInit {
 			}
 		});
 
-		// for debugging purposes
-		/*setInterval(() => {
-			let room = localStorage.getItem(`room${this.roomId}`);
-			let [admin, users] = room!.split(':');
-			console.log('Admin:', admin);
-			console.log('Users:', users);
-		}, 3000);*/
-
 		// on tab/browser close
 		window.onbeforeunload = () => {
 			if(this.admin) {
@@ -156,7 +124,7 @@ export class RoomComponent implements OnInit {
 		setTimeout(() => {
 			
 			// send quiz to all connected users
-			this.socket.emit('send-quiz', this.quiz, this.getUsers());
+			this.socket.emit('send-quiz', this.roomId, this.quiz);
 
 			// set answers array
 			for (let i = 0; i < this.quiz.length; i++) {
@@ -174,7 +142,7 @@ export class RoomComponent implements OnInit {
 		if (fileType == 'application/pdf') {
 			fileDisplay!.innerHTML = `<iframe id='viewPDF' src='${src}' width='800' height='600'>`;
 			if (this.sendFile) {
-				this.socket.emit('send-pdf', event.target.files[0], this.getUsers());
+				this.socket.emit('send-pdf', this.roomId, event.target.files[0]);
 			}
 			
 			if (this.shareScreen) {
@@ -190,7 +158,7 @@ export class RoomComponent implements OnInit {
 					};
 					mediaRecorder.onstop = () => {
 						let blob = new Blob(chunks);
-						this.socket.emit('send-video', blob, this.getUsers());
+						this.socket.emit('send-video', this.roomId, blob);
 					}
 					mediaRecorder.start();
 
@@ -204,7 +172,7 @@ export class RoomComponent implements OnInit {
 
 		else if (fileType.includes('image')) {
 			fileDisplay!.innerHTML = `<img id='viewImg' src='${src}' width='800' height='600'>`;
-			this.socket.emit('send-image', event.target.files[0], this.getUsers());
+			this.socket.emit('send-image', this.roomId, event.target.files[0]);
 		}
 
 		else {
@@ -213,12 +181,12 @@ export class RoomComponent implements OnInit {
 	}
 
 	stopRoom() {
-		localStorage.removeItem(`room${this.roomId}`);
+		this.socket.emit('stop-room', this.roomId);
 	}
 
 	// GUEST FUNCTIONS
 	sendQuestion() {
-		this.socket.emit('send-question', this.name, this.adminSocketId);
+		this.socket.emit('send-question', this.roomId);
 	}
 
 	submitQuiz() {
@@ -247,7 +215,7 @@ export class RoomComponent implements OnInit {
 				quizAnswers.push(answers);
 			}
 		}
-		this.socket.emit('send-answers', this.name, quizAnswers, this.adminSocketId);
+		this.socket.emit('send-answers', this.roomId, quizAnswers);
 
 		// disable quiz interaction after submitting
 		let quizContainer = document.getElementById('quiz-form');
@@ -258,14 +226,8 @@ export class RoomComponent implements OnInit {
 	}
 
 	leaveRoom() {
-		// remove user from connected users in localStorage
-		let room = localStorage.getItem(`room${this.roomId}`);
-		let [admin, users] = room!.split(':');
-		users = users.replace(this.userSocketId, '');
-		localStorage.setItem(`room${this.roomId}`, `${admin}:${users}`);
-
 		// send who disconnected to admin socket
-		this.socket.emit('user-disconnected', this.name, this.adminSocketId);
+		this.socket.emit('user-disconnected', this.roomId);
 	}
 
 	// HELPER FUNCTIONS
@@ -277,20 +239,6 @@ export class RoomComponent implements OnInit {
 		if (viewFile) viewFile.innerHTML = "";
 		this.video = false;
 		this.draw = false;
-	}
-
-	// returns admins socket id
-	getAdmin() {
-		let room = localStorage.getItem(`room${this.roomId}`);
-		let admin = room!.split(':')[0];
-		return admin;
-	}
-
-	// returns all connected users socket ids
-	getUsers() {
-		let room = localStorage.getItem(`room${this.roomId}`);
-		let users = room!.split(':')[1];
-		return users ? users.split(',') : [];
 	}
 
 	toggleShareScreen() {

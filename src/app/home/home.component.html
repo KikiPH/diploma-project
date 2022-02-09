@@ -8,11 +8,11 @@
 			<input id="name" class="input-box" type="text"><br><br>
 			Enter room id:<br>
 			<input id="room-id" class="input-box" type="text"><br><br>
-			<a [routerLink]="(isUser && isRoom) ? ['/room', roomId] : []" [queryParams]="{name: name}">
-				<input class="button" type="button" (click)="setUser(); checkRoom();" value="Join">
+			<a [routerLink]="(isUser && isRoom) ? ['/room', roomId] : []" [queryParams]="{socket: socket.id, name: name}">
+				<input id="guest-room" class="button" type="button" (click)="setUser(); checkRoom();" value="Join">
 			</a>
-			<a [routerLink]="(isUser && isRoom) ? ['/room', roomId, 'admin'] : []" [queryParams]="{name: name}">
-				<input class="button" type="button" (click)="setUser(); startRoom();" value="Host">
+			<a [routerLink]="(isUser && isRoom) ? ['/room', roomId, 'admin'] : []" [queryParams]="{socket: socket.id, name: name}">
+				<input id="admin-room" class="button" type="button" (click)="setUser(); startRoom();" value="Host">
 			</a>
 		</form><br>
 		<a routerLink="/quiz-builder">
