@@ -18,10 +18,7 @@ export class AdminConsoleComponent implements OnInit {
 			status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, `${name} connected`));
 
 			// clear message after 3 seconds
-			setTimeout(() => {
-				let message = document.getElementById(id);
-				message!.textContent = '';
-			}, 3000);
+			this.clearMessage(id);
 		});
 
 		this.socket.on('get-user-disconnected', (name: string) => {
@@ -32,11 +29,7 @@ export class AdminConsoleComponent implements OnInit {
 			let status = document.getElementById('status');
 			status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, `${name} disconnected`));
 
-			// clear message after 3 seconds
-			setTimeout(() => {
-				let message = document.getElementById(id);
-				message!.textContent = '';
-			}, 3000);
+			this.clearMessage(id);
 		});
 
 		this.socket.on('get-question', (name: string) => {
@@ -44,11 +37,7 @@ export class AdminConsoleComponent implements OnInit {
 			let status = document.getElementById('status');
 			status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, `${name} has a question`));
 
-			// clear message after 3 seconds
-			setTimeout(() => {
-				let message = document.getElementById(id);
-				message!.textContent = '';
-			}, 3000);
+			this.clearMessage(id);
 		})
 	}
 
@@ -59,5 +48,12 @@ export class AdminConsoleComponent implements OnInit {
 		}
 		e.textContent = text;
 		return e;
+	}
+
+	clearMessage(id: string) {
+		setTimeout(() => {
+			let message = document.getElementById(id);
+			message!.textContent = '';
+		}, 3000);
 	}
 }

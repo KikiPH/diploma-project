@@ -9,7 +9,6 @@ Run `ng g component component-name` to generate a new component.
 
 TO-DO:
 on new upload -> clear timeout -> if this.sharescreen emit(video)
-
 1.
 WEBRTS
 video lag fix (oncanplay)
@@ -32,7 +31,7 @@ admin console 2 -> status messages (uploaded quiz, stream running/paused)
 stili (admin console, question builder (add hint for question types), menu, question viewer)
 
 5.
-v room dodaj pošiljanje posameznega vprašanja (in statistiko odgovorov, samo za admina)
+v room dodaj pošiljanje posameznega vprašanja
 on send single question -> pause stream, show question, wait for answers, close question viewer, unpause stream
 
 IMPROVEMENTS:
@@ -43,6 +42,6 @@ dodajanje slike k vprašanju
 risanje -> text field
 razdrobitev kode -> quiz-viewer component, video-component, ...
 
+izbira tipa vprašanja kot dropdown/radio (essay, single choice, multiple choice)
 socketId -> pass to router component (not in url)
 start-room -> don't simulate click?
-admin-console timeout -> pass to createElement, also remove instead of emptying content

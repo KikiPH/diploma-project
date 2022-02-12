@@ -88,7 +88,7 @@ export class RoomComponent {
 
 		// on tab/browser close
 		window.onbeforeunload = () => {
-			if(this.admin) {
+			if (this.admin) {
 				this.stopRoom();
 			}
 			else {
