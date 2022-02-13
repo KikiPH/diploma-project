@@ -74,12 +74,6 @@ io.on('connection', socket => {
         }
     });
 
-    socket.on('send-video', (roomId, blob) => {
-        for (let socketId of getUsers(roomId)) {
-            socket.to(socketId).emit('get-video', blob);
-        }
-    });
-
     socket.on('send-image', (roomId, image) => {
         for (let socketId of getUsers(roomId)) {
             socket.to(socketId).emit('get-image', image);
@@ -99,6 +93,11 @@ io.on('connection', socket => {
     socket.on('send-answers', (roomId, answers) => {
         let admin = rooms[roomId][0];
         socket.to(admin).emit('get-answers', users[socket.id], answers);
+    });
+
+    // PEER REQUESTS
+    socket.on('fetch-users', (roomId) => {
+        socket.emit('get-users', getUsers(roomId));
     });
 });
 

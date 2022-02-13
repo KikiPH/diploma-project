@@ -7,6 +7,7 @@ import { io } from 'socket.io-client';
 	styleUrls: ['./home.component.less']
 })
 export class HomeComponent {
+	// throwaway socket for checking rooms on server
 	socket = io('http://localhost:3000');
 
 	name: string;

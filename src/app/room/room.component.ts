@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { io } from 'socket.io-client';
+import Peer from 'peerjs';
 
 @Component({
 	selector: 'room',
@@ -7,31 +8,42 @@ import { io } from 'socket.io-client';
 	styleUrls: ['./room.component.less']
 })
 export class RoomComponent {
-	socket = io('http://localhost:3000');
+	socket = io('http://localhost:3000', {forceNew: true});
+	peer: any;
 
 	roomId = window.location.pathname.split('/')[2];
 	admin = window.location.href.indexOf('admin') > -1;
-	name = window.location.href.split('&name=')[1];
+	name = window.location.href.split('?name=')[1];
 
 	quiz = [] as any;
 	answers = [] as any;
-	shareScreen = true;
-	sendFile = true;
-	video = false; // toggle video element visibility
+	file: any;
+	stream = true;
 	draw = false;
 
 	ngOnInit() {
-		// set socket id
-		let params = window.location.href.split('?socket=')[1];
-		this.socket.id = params.split('&name=')[0];
-
 		// COMMON REQUESTS
 		this.socket.on('connect', () => {
+
 			// send basic data to server
 			this.socket.emit('join-room', this.roomId, this.name);
 			
 			// send who connected to admin socket
 			this.socket.emit('user-connected', this.roomId);
+
+			// init Peer
+			this.peer = new Peer(this.socket.id); // have peerId be equal to socketId
+
+			// PEER REQUESTS (screen sharing)
+			// if admin starts streaming respond to their call
+			this.peer.on('call', (call: any) => {
+				call.answer();
+
+				// and show their stream
+				call.on('stream', (stream: any) => {
+					this.addVideoStream(stream);
+				});
+			});
 		});
 
 		// ADMIN REQUESTS
@@ -46,17 +58,20 @@ export class RoomComponent {
 			this.clear();
 			this.quiz = quiz;
 			
-			// enable quiz interaction
-			let quizContainer = document.getElementById('quiz-form');
-			quizContainer!.style.pointerEvents = 'auto';
+			// wait until quiz is initialized
+			setTimeout(() => {
+				// enable quiz interaction
+				let quizContainer = document.getElementById('quiz-form');
+				quizContainer!.style.pointerEvents = 'auto';
 
-			let submitButton = document.getElementById('quiz-submit');
-			submitButton!.style.backgroundColor = '#4CAF50';
+				let submitButton = document.getElementById('quiz-submit');
+				submitButton!.style.backgroundColor = '#4CAF50';
+			}, 100);
 		});
 
 		this.socket.on('get-pdf', pdf => {
 			this.clear();
-			let fileDisplay = document.getElementById('viewFile');
+			let fileDisplay = document.getElementById('fileContainer');
 			let blob = new Blob([pdf], { type: 'application/pdf' });
 			let reader = new FileReader();
 			reader.readAsDataURL(blob);
@@ -64,20 +79,10 @@ export class RoomComponent {
 				fileDisplay!.innerHTML = `<embed id='viewPDF' src='${reader.result}' width='800' height='600' type='application/pdf'>`;
 			}
 		});
-
-		this.socket.on('get-video', arrayBuffer => {
-			this.video = true; // show video field
-
-			let blob = new Blob([arrayBuffer]);
-			let videoDisplay = document.getElementById('viewVideo') as HTMLVideoElement;
-			videoDisplay.src = window.URL.createObjectURL(blob);
-			videoDisplay.muted = true;
-			videoDisplay.play();
-		});
 		
 		this.socket.on('get-image', image => {
 			this.clear();
-			let fileDisplay = document.getElementById('viewFile');
+			let fileDisplay = document.getElementById('fileContainer');
 			let blob = new Blob([image]);
 			let reader = new FileReader();
 			reader.readAsDataURL(blob);
@@ -98,18 +103,6 @@ export class RoomComponent {
 	}
 
 	// ADMIN FUNCTIONS
-	upload(event: any) {
-		this.clear();
-
-		let fileType = event.target.files[0].type;
-		if (fileType == 'application/json') {
-			this.uploadQuiz(event);
-		}
-		else {
-			this.uploadFile(event);
-		}
-	}
-
 	uploadQuiz(event: any) {
 		// read quiz questions and answers from JSON file
 		const reader = new FileReader();
@@ -134,50 +127,66 @@ export class RoomComponent {
 	}
 
 	uploadFile(event: any) {
+		this.file = event.target.files[0];
 		let src = URL.createObjectURL(event.target.files[0]);
 
-		let fileDisplay = document.getElementById('viewFile');
+		let fileDisplay = document.getElementById('fileContainer');
 		let fileType = event.target.files[0].type;
 
 		if (fileType == 'application/pdf') {
 			fileDisplay!.innerHTML = `<iframe id='viewPDF' src='${src}' width='800' height='600'>`;
-			if (this.sendFile) {
-				this.socket.emit('send-pdf', this.roomId, event.target.files[0]);
-			}
-			
-			if (this.shareScreen) {
-				let chunks: any = [];
-				let constraints = { audio: false, video: { width: 800, height: 600 } };
-				navigator.mediaDevices.getDisplayMedia(constraints).then((stream: any) => {
-					let mediaRecorder = new MediaRecorder(stream);
-					mediaRecorder.onstart = () => {
-						chunks = [];
-					};
-					mediaRecorder.ondataavailable = e => {
-						chunks.push(e.data);
-					};
-					mediaRecorder.onstop = () => {
-						let blob = new Blob(chunks);
-						this.socket.emit('send-video', this.roomId, blob);
-					}
-					mediaRecorder.start();
-
-					setInterval(() => {
-						mediaRecorder.stop();
-						mediaRecorder.start();
-					}, 500); // smaller timeout -> less delay but more flickering
-				});
-			}
 		}
 
 		else if (fileType.includes('image')) {
 			fileDisplay!.innerHTML = `<img id='viewImg' src='${src}' width='800' height='600'>`;
-			this.socket.emit('send-image', this.roomId, event.target.files[0]);
 		}
 
 		else {
 			alert(`File type ${fileType} is not supported. Please convert to pdf or image and try again.`);
 		}
+	}
+
+	sendFile() {
+		if (this.file) {
+			if (this.file.type == 'application/pdf') {
+				this.socket.emit('send-pdf', this.roomId, this.file);
+			}
+			else if (this.file.type.includes('image')) {
+				this.socket.emit('send-image', this.roomId, this.file);
+			}
+			else {
+				alert(`File type ${this.file.type} is not supported. Please convert to pdf or image and try again.`);
+			}
+		}
+		else {
+			alert('No file found. Please upload a file in order to send it.');
+		}
+	}
+
+	shareScreen() {
+		navigator.mediaDevices.getDisplayMedia({
+			video: true,
+			audio: false
+		}).then(stream => {
+			// get all connected users ids
+			this.socket.emit('fetch-users', this.roomId);
+
+			this.socket.on('get-users', userIds => {
+				for (let userId of userIds) {
+					// and connect to them with p2p
+					this.peer.call(userId, stream);
+				}
+			});
+		});
+	}
+
+	toggleStream() {
+		this.stream = !this.stream;
+		console.log('stream playing: ' + this.stream) // to do
+	}
+
+	toggleDraw() {
+		this.draw = !this.draw;
 	}
 
 	stopRoom() {
@@ -233,24 +242,11 @@ export class RoomComponent {
 	// HELPER FUNCTIONS
 	clear() {
 		this.quiz = [];
-		let viewVideo = document.getElementById('viewVideo');
-		if (viewVideo) viewVideo.innerHTML = "";
-		let viewFile = document.getElementById('viewFile');
-		if (viewFile) viewFile.innerHTML = "";
-		this.video = false;
+		let videoContainer = document.getElementById('videoContainer');
+		if (videoContainer) videoContainer.innerHTML = "";
+		let fileContainer = document.getElementById('fileContainer');
+		if (fileContainer) fileContainer.innerHTML = "";
 		this.draw = false;
-	}
-
-	toggleShareScreen() {
-		this.shareScreen = !this.shareScreen;
-	}
-
-	toggleSendFile() {
-		this.sendFile = !this.sendFile;
-	}
-
-	toggleDraw() {
-		this.draw = !this.draw;
 	}
 
 	getAnswerPercentage(questionId: number, answerId: number) {
@@ -280,5 +276,15 @@ export class RoomComponent {
 
 		// return pick percentage of this answer option
 		return `${percentage}% [${count}/${numUsers}]`;
+	}
+
+	// add and play video element
+	addVideoStream(stream: any) {
+		let video = document.createElement('video');
+		video.srcObject = stream;
+		video.addEventListener('loadedmetadata', () => {
+			video.play();
+		});
+		document.getElementById('videoContainer')?.append(video);
 	}
 }

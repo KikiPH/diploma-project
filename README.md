@@ -8,21 +8,20 @@ Run `ng g component component-name` to generate a new component.
 
 
 TO-DO:
-on new upload -> clear timeout -> if this.sharescreen emit(video)
+
+draw on scroll -> mouse offset (razen ce nikoli ne bo scroll ?)
+upload file -> upload quiz (clear file)
+console warning critical dependency
+
 1.
 WEBRTS
-video lag fix (oncanplay)
 crop stream to div size
 stream -> start/pause/continue/end
 kaj z image? a se rabi? -> lahko ostane podprto ampak se zdruzi z send-file (case jpeg/png)
 
 2.
-orodna vrstica -> upload (share file), stream commands (start/stop/pause/continue), disconnect
-
-send question, upload quiz, upload file, share file (UPLOAD)
-stream, pause/continue, stop, draw (STREAM) (pause/continue, draw -> toggle)
-
-ikone + on hover
+orodna vrstica -> spodaj
+ikone ? + on hover
 
 3.
 admin console 2 -> status messages (uploaded quiz, stream running/paused)
@@ -43,5 +42,4 @@ risanje -> text field
 razdrobitev kode -> quiz-viewer component, video-component, ...
 
 izbira tipa vprašanja kot dropdown/radio (essay, single choice, multiple choice)
-socketId -> pass to router component (not in url)
 start-room -> don't simulate click?

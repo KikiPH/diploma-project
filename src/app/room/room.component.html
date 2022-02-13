@@ -1,19 +1,21 @@
 <div class="body">
     <div *ngIf="admin">
         <admin-console [socket]="socket"></admin-console>
-        <input class="button" type="file" (change)="clear(); upload($event)" value="Upload file"><br>
-        <label><input type="checkbox" (change)="toggleShareScreen()" checked>Share screen</label>
-        <label><input type="checkbox" (change)="toggleSendFile()" checked>Send file</label>
-        <label><input type="checkbox" (change)="toggleDraw()">Draw</label>
-        <!--input class="button" type="file" (change)="uploadQuiz($event)" value="Upload quiz"-->
-        <!--input class="button" type="file" (change)="uploadFile($event)" value="Upload PDF/PPT"-->
+        <label for="uploadQuiz" class="button">Upload quiz</label>
+        <input id="uploadQuiz" type="file" style="visibility: hidden;" (change)="clear(); uploadQuiz($event)"><br><br>
+        <label for="uploadFile" class="button">Upload file</label>
+        <input id="uploadFile" type="file" style="visibility: hidden;" (change)="clear(); uploadFile($event)"><br><br>
+        <input class="button" type="button" (click)="sendFile()" value="Send file"><br><br>
+        <input class="button" type="button" (click)="shareScreen()" value="Share screen"><br><br>
+        <input class="button" type="button" (click)="toggleStream()" value="Pause/play"><br><br>
+        <input class="button" type="button" (click)="toggleDraw()" value="Draw">
     </div>
-
     <br>
+
     <!--- if admin then overlay the file and the canvas // if guest then show file and stream side by side -->
     <div id="display" [ngStyle]="{'display': admin ? 'inline-block': 'flex'}">
-        <video *ngIf="!admin && video" id="viewVideo" class="display-panel" width="756" height="600" autoplay muted></video>
-        <div id="viewFile" [ngStyle]="{'position': draw ? 'absolute' : '', 'flex': !admin && 1}"></div>
+        <div id="videoContainer"></div>
+        <div id="fileContainer" [ngStyle]="{'position': draw ? 'absolute' : '', 'flex': !admin && 1}"></div>
         <draw *ngIf="draw"></draw>
     </div>
 
