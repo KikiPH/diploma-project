@@ -38,7 +38,27 @@ export class AdminConsoleComponent implements OnInit {
 			status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, `${name} has a question`));
 
 			this.clearMessage(id);
-		})
+		});
+
+		this.socket.on('get-stream-status', (stream: boolean) => {
+			// clear any previous message
+			this.clearMessage('stream', 0);
+
+			setTimeout(() => {
+				// currently running
+				if (stream) {
+					let id = 'stream';
+					let status = document.getElementById('status');
+					status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, 'Streaming...'));
+				}
+				// currently paused
+				else if (!stream) {
+					let id = 'stream';
+					let status = document.getElementById('status');
+					status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, 'Stream paused...'));
+				}
+			}, 100);
+		});
 	}
 
 	customCreateElement(tag: string, attributes: any, text: string) {
@@ -50,10 +70,10 @@ export class AdminConsoleComponent implements OnInit {
 		return e;
 	}
 
-	clearMessage(id: string) {
+	clearMessage(id: string, timeout: number = 3000) {
 		setTimeout(() => {
 			let message = document.getElementById(id);
-			message!.textContent = '';
-		}, 3000);
+			message?.remove();
+		}, timeout);
 	}
 }

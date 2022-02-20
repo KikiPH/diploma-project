@@ -91,6 +91,13 @@ export class RoomComponent {
 			}
 		});
 
+		this.socket.on('get-toggle-stream', () => {
+			let video = document.getElementById('video') as HTMLVideoElement;
+			if (video) {
+				(<MediaStream>video.srcObject)!.getTracks().forEach(t => t.enabled = !t.enabled);
+			}
+		});
+
 		// on tab/browser close
 		window.onbeforeunload = () => {
 			if (this.admin) {
@@ -182,7 +189,7 @@ export class RoomComponent {
 
 	toggleStream() {
 		this.stream = !this.stream;
-		console.log('stream playing: ' + this.stream) // to do
+		this.socket.emit('toggle-stream', this.roomId, this.stream);
 	}
 
 	toggleDraw() {
@@ -281,6 +288,7 @@ export class RoomComponent {
 	// add and play video element
 	addVideoStream(stream: any) {
 		let video = document.createElement('video');
+		video.id = 'video';
 		video.srcObject = stream;
 		video.addEventListener('loadedmetadata', () => {
 			video.play();

@@ -99,6 +99,14 @@ io.on('connection', socket => {
     socket.on('fetch-users', (roomId) => {
         socket.emit('get-users', getUsers(roomId));
     });
+
+    socket.on('toggle-stream', (roomId, stream) => {
+        for (let socketId of getUsers(roomId)) {
+            socket.to(socketId).emit('get-toggle-stream');
+        }
+
+        socket.emit('get-stream-status', stream);
+    })
 });
 
 // get all connected users in a room without the admin

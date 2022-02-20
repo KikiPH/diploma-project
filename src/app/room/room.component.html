@@ -1,20 +1,9 @@
 <div class="body">
-    <div *ngIf="admin">
-        <admin-console [socket]="socket"></admin-console>
-        <label for="uploadQuiz" class="button">Upload quiz</label>
-        <input id="uploadQuiz" type="file" style="visibility: hidden;" (change)="clear(); uploadQuiz($event)"><br><br>
-        <label for="uploadFile" class="button">Upload file</label>
-        <input id="uploadFile" type="file" style="visibility: hidden;" (change)="clear(); uploadFile($event)"><br><br>
-        <input class="button" type="button" (click)="sendFile()" value="Send file"><br><br>
-        <input class="button" type="button" (click)="shareScreen()" value="Share screen"><br><br>
-        <input class="button" type="button" (click)="toggleStream()" value="Pause/play"><br><br>
-        <input class="button" type="button" (click)="toggleDraw()" value="Draw">
-    </div>
-    <br>
+    <admin-console *ngIf="admin" [socket]="socket"></admin-console><br>
 
     <!--- if admin then overlay the file and the canvas // if guest then show file and stream side by side -->
     <div id="display" [ngStyle]="{'display': admin ? 'inline-block': 'flex'}">
-        <div id="videoContainer"></div>
+        <div *ngIf="!admin" id="videoContainer" class="video-container"></div>
         <div id="fileContainer" [ngStyle]="{'position': draw ? 'absolute' : '', 'flex': !admin && 1}"></div>
         <draw *ngIf="draw"></draw>
     </div>
@@ -77,10 +66,28 @@
         </div>
     </div>
 
+    <!-- admin buttons row -->
+    <div *ngIf="admin" class="button-row">
+        <label for="uploadQuiz" class="button column">Upload quiz</label>
+        <input id="uploadQuiz" type="file" style="display: none;" (change)="clear(); uploadQuiz($event)">
+        <label for="uploadFile" class="button column">Upload file</label>
+        <input id="uploadFile" type="file" style="display: none;" (change)="clear(); uploadFile($event)">
+        <input class="button column" type="button" (click)="sendFile()" value="Send file">
+        <input class="button column" type="button" (click)="shareScreen()" value="Share screen">
+        <input class="button column" type="button" (click)="toggleStream()" value="Pause/play">
+        <input class="button column" type="button" (click)="toggleDraw()" value="Draw">
+        <a routerLink="/home">
+            <input class="button" type="button" (click)="stopRoom()" value="Stop room">
+        </a>
+    </div>
+
     <br>
-    <input *ngIf="!admin" class="button" type="button" (click)="sendQuestion()" value="Raise hand">
-    <a routerLink="/home">
-        <input *ngIf="admin" class="button" type="button" (click)="stopRoom()" value="Stop room">
-        <input *ngIf="!admin" class="button" type="button" (click)="leaveRoom()" value="Home">
-    </a>
+
+    <!-- guest buttons row -->
+    <div *ngIf="!admin" class="button-row">
+        <input class="button column" type="button" (click)="sendQuestion()" value="Raise hand">
+        <a routerLink="/home">
+            <input class="button" type="button" (click)="leaveRoom()" value="Home">
+        </a>
+    </div>
 </div>
