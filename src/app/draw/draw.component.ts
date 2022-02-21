@@ -38,19 +38,19 @@ export class DrawComponent implements OnInit {
 		this.height = this.canvas.height;
 
 		this.canvas.addEventListener("mousemove", (e) => {
-			this.findXY('move', e)
+			this.findXY('move', e);
 		});
 
 		this.canvas.addEventListener("mousedown", (e) => {
-			this.findXY('down', e)
+			this.findXY('down', e);
 		});
 
 		this.canvas.addEventListener("mouseup", (e) => {
-			this.findXY('up', e)
+			this.findXY('up', e);
 		});
 
 		this.canvas.addEventListener("mouseout", (e) => {
-			this.findXY('out', e)
+			this.findXY('out', e);
 		});
 	}
 
@@ -157,8 +157,8 @@ export class DrawComponent implements OnInit {
 		if (res == 'down') {
 			this.prevX = this.currX;
 			this.prevY = this.currY;
-			this.currX = e.clientX - this.canvas.offsetLeft;
-			this.currY = e.clientY - this.canvas.offsetTop;
+			this.currX = e.clientX - this.canvas.getBoundingClientRect().left;
+			this.currY = e.clientY - this.canvas.getBoundingClientRect().top;
 
 			this.flag = true;
 			this.context.beginPath();
@@ -173,8 +173,8 @@ export class DrawComponent implements OnInit {
 			if (res == 'up' && this.type != 'default' && this.type != 'highlight') {
 				this.prevX = this.currX;
 				this.prevY = this.currY;
-				this.currX = e.clientX - this.canvas.offsetLeft;
-				this.currY = e.clientY - this.canvas.offsetTop;
+				this.currX = e.clientX - this.canvas.getBoundingClientRect().left;
+				this.currY = e.clientY - this.canvas.getBoundingClientRect().top;
 
 				switch (this.type) {
 					case 'line':
@@ -200,8 +200,8 @@ export class DrawComponent implements OnInit {
 				if (this.flag) {
 					this.prevX = this.currX;
 					this.prevY = this.currY;
-					this.currX = e.clientX - this.canvas.offsetLeft;
-					this.currY = e.clientY - this.canvas.offsetTop;
+					this.currX = e.clientX - this.canvas.getBoundingClientRect().left;
+					this.currY = e.clientY - this.canvas.getBoundingClientRect().top;
 					this.draw();
 				}
 			}

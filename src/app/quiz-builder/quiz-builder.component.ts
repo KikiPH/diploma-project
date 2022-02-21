@@ -6,19 +6,28 @@ import { Component } from '@angular/core';
 	styleUrls: ['./quiz-builder.component.less']
 })
 export class QuizBuilderComponent {
-	/*questions = [
-		{
-			title: 'Test',
-			answers: [
-				{ text: 'A', correct: false },
-				{ text: 'B', correct: false },
-				{ text: 'C', correct: true },
-				{ text: 'D', correct: false }
-			],
-			type: '2'
-		}
-	];*/
 	questions = [] as any;
+	type = 1;
+
+	toggleType() {
+		// question type (1 - essay, 2 - single choice, 3 - multiple choice)
+		let type1 = document.getElementById('type-1') as HTMLInputElement;
+		let type2 = document.getElementById('type-2') as HTMLInputElement;
+		let type3 = document.getElementById('type-3') as HTMLInputElement;
+
+		if (type1.checked) {
+			this.type = 1;
+			return;
+		}
+		else if (type2.checked) {
+			this.type = 2;
+			return;
+		}
+		else if (type3.checked) {
+			this.type = 3;
+			return;
+		}
+	}
 
 	addQuestion() {
 		let title = (<HTMLInputElement>document.getElementById('add-title')).value;
@@ -35,15 +44,6 @@ export class QuizBuilderComponent {
 		let answer4 = (<HTMLInputElement>document.getElementById('add-answer-4')).value;
 		let answer4Correct = (<HTMLInputElement>document.getElementById('toggle-answer-4')).checked;
 
-		let correct = 0;
-		correct += answer1Correct ? 1 : 0;
-		correct += answer2Correct ? 1 : 0;
-		correct += answer3Correct ? 1 : 0;
-		correct += answer4Correct ? 1 : 0;
-		
-		// question type (1 - essay, 2 - single choice, 3 - multiple choice)
-		let type = correct == 0 ? 1 : correct == 1 ? 2 : 3;
-
 		let question = {
 			title: title,
 			answers: [
@@ -52,7 +52,7 @@ export class QuizBuilderComponent {
 				{ text: answer3, correct: answer3Correct },
 				{ text: answer4, correct: answer4Correct },
 			],
-			type: type
+			type: this.type
 		};
 		this.questions.push(question);
 

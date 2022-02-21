@@ -40,6 +40,41 @@ export class AdminConsoleComponent implements OnInit {
 			this.clearMessage(id);
 		});
 
+		this.socket.on('get-quiz-status', () => {
+			let id = 'quiz';
+			let status = document.getElementById('status');
+			status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, 'Quiz uploaded.'));
+
+			this.clearMessage(id);
+		});
+
+		this.socket.on('get-pdf-status', () => {
+			let id = 'pdf';
+			let status = document.getElementById('status');
+			status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, 'PDF shared with users.'));
+
+			this.clearMessage(id);
+		});
+
+		this.socket.on('get-image-status', () => {
+			let id = 'image';
+			let status = document.getElementById('status');
+			status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, 'Image shared with users.'));
+
+			this.clearMessage(id);
+		});
+
+		this.socket.on('get-start-stream', () => {
+			let id = 'start';
+			let status = document.getElementById('status');
+			status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, 'Stream started.'));
+
+			this.clearMessage(id);
+
+			id = 'stream';
+			status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, 'Streaming...'));
+		});
+
 		this.socket.on('get-stream-status', (stream: boolean) => {
 			// clear any previous message
 			this.clearMessage('stream', 0);
@@ -58,6 +93,17 @@ export class AdminConsoleComponent implements OnInit {
 					status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, 'Stream paused...'));
 				}
 			}, 100);
+		});
+
+		this.socket.on('get-stop-stream', () => {
+			let id = 'stop';
+			let status = document.getElementById('status');
+			status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, 'Stream stopped.'));
+
+			this.clearMessage(id);
+
+			id = 'stream';
+			this.clearMessage(id);
 		});
 	}
 

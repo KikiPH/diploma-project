@@ -66,18 +66,24 @@ io.on('connection', socket => {
         for (let socketId of getUsers(roomId)) {
             socket.to(socketId).emit('get-quiz', quiz);
         }
+        
+        socket.emit('get-quiz-status'); // for admins console
     });
 
     socket.on('send-pdf', (roomId, pdf) => {
         for (let socketId of getUsers(roomId)) {
             socket.to(socketId).emit('get-pdf', pdf);
         }
+
+        socket.emit('get-pdf-status');
     });
 
     socket.on('send-image', (roomId, image) => {
         for (let socketId of getUsers(roomId)) {
             socket.to(socketId).emit('get-image', image);
         }
+        
+        socket.emit('get-image-status');
     });
 
     socket.on('stop-room', (roomId) => {
@@ -100,13 +106,25 @@ io.on('connection', socket => {
         socket.emit('get-users', getUsers(roomId));
     });
 
+    socket.on('start-stream', () => {
+        socket.emit('get-start-stream');
+    });
+
     socket.on('toggle-stream', (roomId, stream) => {
         for (let socketId of getUsers(roomId)) {
             socket.to(socketId).emit('get-toggle-stream');
         }
 
         socket.emit('get-stream-status', stream);
-    })
+    });
+
+    socket.on('stop-stream', (roomId) => {
+        for (let socketId of getUsers(roomId)) {
+            socket.to(socketId).emit('get-stop-stream');
+        }
+
+        socket.emit('get-stop-stream');
+    });
 });
 
 // get all connected users in a room without the admin

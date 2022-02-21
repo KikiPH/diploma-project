@@ -8,24 +8,20 @@ Run `ng g component component-name` to generate a new component.
 
 
 TO-DO:
-draw on scroll -> mouse offset (razen ce nikoli ne bo scroll ?)
+orodna vrstica ikone ? + on hover (fontawesome)
 
-upload file -> upload quiz (clear file)
+if not streaming -> no message
+if quiz -> no stream, no draw
 
 crop stream (better & check with file upload)
-stream pause (fix black screen)
-stream stop/start
-admin console status messages (uploaded quiz, stream started/ended)
-
-question type radio button
-izbira tipa vprašanja kot dropdown/radio (essay, single choice, multiple choice)
-
-orodna vrstica ikone ? + on hover
+border stream size window
+remove hidden answer types for essay questions
+sticky footer (guest -> big quiz)
 =============================
 stili
 
-v room dodaj pošiljanje posameznega vprašanja
-((on send single question -> pause stream, show question, wait for answers, close question viewer, unpause stream))
+stream pause -> fix black screen (odstrani funkcijo pause/play ?)
+v room dodaj pošiljanje posameznega vprašanja (quick builder on click -> send -> show answers -> dismiss on click)
 
 IMPROVEMENTS:
 boljša rešitev za cors kot cors origin * (ni varno)
@@ -37,4 +33,5 @@ razdrobitev kode -> quiz-viewer component, video-component, ...
 
 start room -> brez simulacije klika (.click()) ?
 upload file/image -> združi kodo ?
+status messages -> združi kodo ?
 console warning critical dependency ?

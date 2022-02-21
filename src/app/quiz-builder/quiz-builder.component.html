@@ -8,10 +8,35 @@
     <form id="add-form" class="add-form" action="">
         Question:<br>
         <input id="add-title" type="text" size="20"><br><br>
-        <input id="add-answer-1" type="text" placeholder="Answer 1" size="25"><input id="toggle-answer-1" type="checkbox"><br>
-        <input id="add-answer-2" type="text" placeholder="Answer 2" size="25"><input id="toggle-answer-2" type="checkbox"><br>
-        <input id="add-answer-3" type="text" placeholder="Answer 3" size="25"><input id="toggle-answer-3" type="checkbox"><br>
-        <input id="add-answer-4" type="text" placeholder="Answer 4" size="25"><input id="toggle-answer-4" type="checkbox"><br><br>
+
+        <div id="question-type-picker">
+            <label><input id="type-1" class="question-type" type="radio" name="question-type" value="1" (click)="toggleType()" checked="checked">Essay</label>
+            <label><input id="type-2" class="question-type" type="radio" name="question-type" value="2" (click)="toggleType()">Single choice</label>
+            <label><input id="type-3" class="question-type" type="radio" name="question-type" value="3" (click)="toggleType()">Multiple choice</label>
+        </div><br>
+
+        <!-- need empty answer fields for JSON parsing -->
+        <div *ngIf="type == 1" style="display: none">
+            <input id="add-answer-1" type="text" placeholder="Answer 1" size="25"><input id="toggle-answer-1" type="checkbox"><br>
+            <input id="add-answer-2" type="text" placeholder="Answer 2" size="25"><input id="toggle-answer-2" type="checkbox"><br>
+            <input id="add-answer-3" type="text" placeholder="Answer 3" size="25"><input id="toggle-answer-3" type="checkbox"><br>
+            <input id="add-answer-4" type="text" placeholder="Answer 4" size="25"><input id="toggle-answer-4" type="checkbox"><br><br>
+        </div>
+
+        <div *ngIf="type == 2">
+            <input id="add-answer-1" type="text" placeholder="Answer 1" size="25"><input id="toggle-answer-1" type="radio" name="answer"><br>
+            <input id="add-answer-2" type="text" placeholder="Answer 2" size="25"><input id="toggle-answer-2" type="radio" name="answer"><br>
+            <input id="add-answer-3" type="text" placeholder="Answer 3" size="25"><input id="toggle-answer-3" type="radio" name="answer"><br>
+            <input id="add-answer-4" type="text" placeholder="Answer 4" size="25"><input id="toggle-answer-4" type="radio" name="answer"><br><br>
+        </div>
+
+        <div *ngIf="type == 3">
+            <input id="add-answer-1" type="text" placeholder="Answer 1" size="25"><input id="toggle-answer-1" type="checkbox"><br>
+            <input id="add-answer-2" type="text" placeholder="Answer 2" size="25"><input id="toggle-answer-2" type="checkbox"><br>
+            <input id="add-answer-3" type="text" placeholder="Answer 3" size="25"><input id="toggle-answer-3" type="checkbox"><br>
+            <input id="add-answer-4" type="text" placeholder="Answer 4" size="25"><input id="toggle-answer-4" type="checkbox"><br><br>
+        </div>
+
         <input class="button" type="button" (click)="addQuestion()" value="Add question">
     </form><br>
 

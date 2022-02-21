@@ -73,8 +73,11 @@
         <label for="uploadFile" class="button column">Upload file</label>
         <input id="uploadFile" type="file" style="display: none;" (change)="clear(); uploadFile($event)">
         <input class="button column" type="button" (click)="sendFile()" value="Send file">
-        <input class="button column" type="button" (click)="shareScreen()" value="Share screen">
+
+        <input *ngIf="!stream" class="button column" type="button" (click)="startStream()" value="Share screen">
+        <input *ngIf="stream" class="button column" type="button" (click)="stopStream()" value="Stop sharing">
         <input class="button column" type="button" (click)="toggleStream()" value="Pause/play">
+
         <input class="button column" type="button" (click)="toggleDraw()" value="Draw">
         <a routerLink="/home">
             <input class="button" type="button" (click)="stopRoom()" value="Stop room">

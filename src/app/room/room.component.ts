@@ -18,7 +18,8 @@ export class RoomComponent {
 	quiz = [] as any;
 	answers = [] as any;
 	file: any;
-	stream = true;
+	stream = false; // stream active
+	streamRunning = true; // stream running/paused
 	draw = false;
 
 	ngOnInit() {
@@ -98,6 +99,13 @@ export class RoomComponent {
 			}
 		});
 
+		this.socket.on('get-stop-stream', () => {
+			let video = document.getElementById('video') as HTMLVideoElement;
+			if (video) {
+				(<MediaStream>video.srcObject)!.getTracks().forEach(t => t.stop());
+			}
+		});
+
 		// on tab/browser close
 		window.onbeforeunload = () => {
 			if (this.admin) {
@@ -170,7 +178,7 @@ export class RoomComponent {
 		}
 	}
 
-	shareScreen() {
+	startStream() {
 		navigator.mediaDevices.getDisplayMedia({
 			video: true,
 			audio: false
@@ -185,11 +193,21 @@ export class RoomComponent {
 				}
 			});
 		});
+		
+		this.stream = true;
+		this.socket.emit('start-stream');
 	}
 
 	toggleStream() {
-		this.stream = !this.stream;
-		this.socket.emit('toggle-stream', this.roomId, this.stream);
+		this.streamRunning = !this.streamRunning;
+		this.socket.emit('toggle-stream', this.roomId, this.streamRunning);
+	}
+	
+	stopStream() {
+		if (this.stream) {
+			this.socket.emit('stop-stream', this.roomId);
+		}
+		this.stream = false;
 	}
 
 	toggleDraw() {
@@ -249,11 +267,24 @@ export class RoomComponent {
 	// HELPER FUNCTIONS
 	clear() {
 		this.quiz = [];
+
+		// clear button values
+		setTimeout(() => { // timeout so it can firstly parse (send and show) the new uploaded file
+			let uploadQuiz = <HTMLInputElement>document.getElementById('uploadQuiz');
+			uploadQuiz.value = '';
+			let uploadFile = <HTMLInputElement>document.getElementById('uploadFile');
+			uploadFile.value = '';
+		}, 100);
+
+		// clear display fields
 		let videoContainer = document.getElementById('videoContainer');
 		if (videoContainer) videoContainer.innerHTML = "";
 		let fileContainer = document.getElementById('fileContainer');
 		if (fileContainer) fileContainer.innerHTML = "";
+
+		// reset other
 		this.draw = false;
+		this.stopStream();
 	}
 
 	getAnswerPercentage(questionId: number, answerId: number) {
