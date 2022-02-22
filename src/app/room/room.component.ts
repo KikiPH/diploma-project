@@ -215,6 +215,7 @@ export class RoomComponent {
 	}
 
 	stopRoom() {
+		console.log("hihis")
 		this.socket.emit('stop-room', this.roomId);
 	}
 

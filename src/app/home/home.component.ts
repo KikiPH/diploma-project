@@ -17,7 +17,7 @@ export class HomeComponent {
 
 	ngOnInit() {
 		this.socket.on('get-start-room', (start) => {
-			if (start) {
+			if (this.isUser && start) {
 				this.isRoom = true;
 				// have to wait for correct server response, then simulate button click again
 				document.getElementById('admin-room')?.click();
@@ -28,7 +28,7 @@ export class HomeComponent {
 		});
 
 		this.socket.on('get-check-room', (room) => {
-			if (room) {
+			if (this.isUser && room) {
 				this.isRoom = true;
 				document.getElementById('guest-room')?.click();
 			}
@@ -39,22 +39,31 @@ export class HomeComponent {
 		});
 	}
 
+	host() {
+		this.setUser() && this.startRoom();
+	}
+
+	join() {
+		this.setUser() && this.checkRoom();
+	}
+
 	setUser() {
 		let name = (<HTMLInputElement>document.getElementById('name')).value;
 		if (!name) {
 			alert('Please enter your name.');
-			return;
+			return false;
 		}
 
 		let id = (<HTMLInputElement>document.getElementById('room-id')).value;
 		if (!id) {
 			alert('Please input room number.');
-			return;
+			return false;
 		}
 
 		this.name = name;
 		this.roomId = id;
 		this.isUser = true;
+		return true;
 	}
 
 	startRoom() {

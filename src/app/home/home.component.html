@@ -9,10 +9,10 @@
 			Enter room id:<br>
 			<input id="room-id" class="input-box" type="text"><br><br>
 			<a [routerLink]="(isUser && isRoom) ? ['/room', roomId] : []" [queryParams]="{name: name}">
-				<input id="guest-room" class="button" type="button" (click)="setUser(); checkRoom();" value="Join">
+				<input id="guest-room" class="button" type="button" (click)="join();" value="Join">
 			</a>
 			<a [routerLink]="(isUser && isRoom) ? ['/room', roomId, 'admin'] : []" [queryParams]="{name: name}">
-				<input id="admin-room" class="button" type="button" (click)="setUser(); startRoom();" value="Host">
+				<input id="admin-room" class="button" type="button" (click)="host();" value="Host">
 			</a>
 		</form><br>
 		<a routerLink="/quiz-builder">

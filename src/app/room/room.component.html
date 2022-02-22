@@ -68,19 +68,60 @@
 
     <!-- admin buttons row -->
     <div *ngIf="admin" class="button-row">
-        <label for="uploadQuiz" class="button column">Upload quiz</label>
-        <input id="uploadQuiz" type="file" style="display: none;" (change)="clear(); uploadQuiz($event)">
-        <label for="uploadFile" class="button column">Upload file</label>
-        <input id="uploadFile" type="file" style="display: none;" (change)="clear(); uploadFile($event)">
-        <input class="button column" type="button" (click)="sendFile()" value="Send file">
+        <label for="uploadQuiz" class="button column">
+            <i class="fa-solid fa-file-signature"></i>
+            <span class="hint">Upload quiz</span>
+            <input id="uploadQuiz" type="file" style="display: none;" (change)="clear(); uploadQuiz($event)">
+        </label>
 
-        <input *ngIf="!stream" class="button column" type="button" (click)="startStream()" value="Share screen">
-        <input *ngIf="stream" class="button column" type="button" (click)="stopStream()" value="Stop sharing">
-        <input class="button column" type="button" (click)="toggleStream()" value="Pause/play">
+        <label for="uploadFile" class="button column">
+            <i class="fa-solid fa-file-arrow-up"></i>
+            <span class="hint">Upload File</span>
+            <input id="uploadFile" type="file" style="display: none;" (change)="clear(); uploadFile($event)">
+        </label>
 
-        <input class="button column" type="button" (click)="toggleDraw()" value="Draw">
-        <a routerLink="/home">
-            <input class="button" type="button" (click)="stopRoom()" value="Stop room">
+        <label for="sendFileButton" class="button column">
+            <i class="fa-solid fa-paper-plane"></i>
+            <span class="hint">Send file</span>
+            <input id="sendFileButton" type="button" style="display: none;" (click)="sendFile()">
+        </label>
+
+        <label *ngIf="!stream" for="startStreamButton" class="button column">
+            <i class="fa-solid fa-video"></i>
+            <span class="hint">Share screen</span>
+            <input id="startStreamButton" type="button" style="display: none;" (click)="startStream()">
+        </label>
+
+        <label *ngIf="stream" for="stopStreamButton" class="button column">
+            <span class="fa-stack fa-2x">
+                <i class="fa-solid fa-video fa-stack-1x"></i>
+                <i class="fa-solid fa-ban fa-stack-2x"></i>
+            </span>
+            <span class="hint">Stop sharing</span>
+            <input id="stopStreamButton" type="button" style="display: none;" (click)="stopStream()">
+        </label>
+
+        <label *ngIf="streamRunning" for="toggleStreamButton" class="button column">
+            <i class="fa-solid fa-play"></i>
+            <span class="hint">Pause/play</span>
+            <input id="toggleStreamButton" type="button" style="display: none;" (click)="toggleStream()">
+        </label>
+
+        <label *ngIf="!streamRunning" for="toggleStreamButton" class="button column">
+            <i class="fa-solid fa-pause"></i>
+            <span class="hint">Pause/play</span>
+            <input id="toggleStreamButton" type="button" style="display: none;" (click)="toggleStream()">
+        </label>
+
+        <label for="drawButton" class="button column">
+            <i class="fa-solid fa-pencil"></i>
+            <span class="hint">Draw</span>
+            <input id="drawButton" type="button" style="display: none;" (click)="toggleDraw()">
+        </label>
+        
+        <a routerLink="/home" class="button column" (click)="stopRoom()">
+            <i class="fa-solid fa-house"></i>
+            <span class="hint">Stop room</span>
         </a>
     </div>
 

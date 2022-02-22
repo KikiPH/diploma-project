@@ -15,5 +15,30 @@
 }
 
 .column {
-    flex: 1 1 0px;
+    flex: 1 1 0px; // 0 grow 0 shrink 20px size
+}
+
+.hint {
+    position: relative;
+    top: -280%;
+    background-color: #4CAF50;
+    border-radius: 10px;
+    padding: 6px 10px 6px 10px;
+    visibility: hidden;
+}
+
+.button:hover .hint {
+    visibility: visible !important;
+}
+
+/* hint bottom arrow */
+.hint::after {
+    content: " ";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-color: #4CAF50 transparent transparent transparent;
+    border-style: solid;
+    border-width: 5px;
 }

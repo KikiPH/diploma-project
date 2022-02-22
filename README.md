@@ -10,6 +10,8 @@ Run `ng g component component-name` to generate a new component.
 TO-DO:
 orodna vrstica ikone ? + on hover (fontawesome)
 
+upload quiz -> ni vec warninga (sploh ni warninga?) ?
+
 if not streaming -> no message
 if quiz -> no stream, no draw
 
