@@ -7,32 +7,38 @@
 
 .button-row {
     position: absolute;
-    width: 100%;
     bottom: 5%;
-
+    width: 100%;
     display: flex;
-    flex-direction: row;
+    justify-content: center;
 }
 
-.column {
-    flex: 1 1 0px; // 0 grow 0 shrink 20px size
-}
-
-.hint {
+.button {
     position: relative;
-    top: -280%;
+    width: 40px;
+    height: 40px;
+    padding-top: 20px;
+    text-align: center;
+}
+
+.tooltip {
+    position: absolute;
+    top: -60%;
+    left: 0;
+    right: 0;
     background-color: #4CAF50;
     border-radius: 10px;
-    padding: 6px 10px 6px 10px;
+    padding: 6px 4px 6px 4px;
+    white-space: nowrap;
     visibility: hidden;
 }
 
-.button:hover .hint {
+.button:hover .tooltip {
     visibility: visible !important;
 }
 
 /* hint bottom arrow */
-.hint::after {
+.tooltip::after {
     content: " ";
     position: absolute;
     top: 100%;
@@ -41,4 +47,8 @@
     border-color: #4CAF50 transparent transparent transparent;
     border-style: solid;
     border-width: 5px;
+}
+
+.fa-stack {
+    height: auto;
 }

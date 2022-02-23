@@ -119,6 +119,12 @@ export class RoomComponent {
 
 	// ADMIN FUNCTIONS
 	uploadQuiz(event: any) {
+		let fileType = event.target.files[0].type;
+		if (fileType != 'application/json') {
+			alert(`File type ${fileType} is not supported. Please upload quiz in JSON format.`);
+			return;
+		}
+
 		// read quiz questions and answers from JSON file
 		const reader = new FileReader();
 		reader.onloadend = (e) => {
@@ -179,6 +185,11 @@ export class RoomComponent {
 	}
 
 	startStream() {
+		if (this.quiz.length > 0) {
+			alert('Screen sharing is disabled during quiz time.');
+			return;
+		}
+
 		navigator.mediaDevices.getDisplayMedia({
 			video: true,
 			audio: false
@@ -192,15 +203,17 @@ export class RoomComponent {
 					this.peer.call(userId, stream);
 				}
 			});
+
+			this.stream = true;
+			this.socket.emit('start-stream');
 		});
-		
-		this.stream = true;
-		this.socket.emit('start-stream');
 	}
 
 	toggleStream() {
-		this.streamRunning = !this.streamRunning;
-		this.socket.emit('toggle-stream', this.roomId, this.streamRunning);
+		if (this.stream) {
+			this.streamRunning = !this.streamRunning;
+			this.socket.emit('toggle-stream', this.roomId, this.streamRunning);
+		}
 	}
 	
 	stopStream() {
@@ -211,11 +224,15 @@ export class RoomComponent {
 	}
 
 	toggleDraw() {
+		if (this.quiz.length > 0) {
+			alert('Draw function is disabled during quiz time.');
+			return;
+		}
+
 		this.draw = !this.draw;
 	}
 
 	stopRoom() {
-		console.log("hihis")
 		this.socket.emit('stop-room', this.roomId);
 	}
 

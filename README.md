@@ -4,25 +4,29 @@ Run `ng serve` to start a dev server (`http://localhost:4200/`).
 Run `nodemon server.js`* to start the socket listener (run in separate command window).
 Run `ng g component component-name` to generate a new component.
 
-* - if it returns an error try installing nodemon with 'npm install -g nodemon'
+* - if it returns an error try installing nodemon with `npm install -g nodemon`
 
 
 TO-DO:
-orodna vrstica ikone ? + on hover (fontawesome)
+brez ikone:
+HOME -> Join, Host, Create quiz
+QUIZBUILDER -> Add question
 
-upload quiz -> ni vec warninga (sploh ni warninga?) ?
+stili -> quiz answers, questions, file display, quiz form
 
-if not streaming -> no message
-if quiz -> no stream, no draw
+join button and button-icon classes
+room icons 2xl -> xl (manjse)
+remove empty classes
+admin-console message text color
+stop stream icon align
+start stream -> pause (icon change) -> stop stream (icon doesnt change back)
 
 crop stream (better & check with file upload)
 border stream size window
 remove hidden answer types for essay questions
 sticky footer (guest -> big quiz)
 =============================
-stili
-
-stream pause -> fix black screen (odstrani funkcijo pause/play ?)
+stream pause -> fix black screen (odstrani funkcijo pause/play ? // background color + text "paused" ?)
 v room dodaj pošiljanje posameznega vprašanja (quick builder on click -> send -> show answers -> dismiss on click)
 
 IMPROVEMENTS:

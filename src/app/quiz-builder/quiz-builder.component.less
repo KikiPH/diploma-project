@@ -1,0 +1,60 @@
+.title {
+    font-size: 50px;
+    font-weight: bold;
+    color: #4CAF50;
+    text-shadow: -2px -2px #B5DFB7;
+}
+
+.button-row {
+    position: absolute;
+    bottom: 5%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.button-icon {
+    position: relative;
+    width: 34px;
+    height: 30px;
+
+    background-color: #4CAF50;
+    border-radius: 5px;
+    color: white;
+    margin: 0 15px;
+    padding: 20px 26px 12px 26px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.button-icon:hover {
+    background-color: rgb(226, 226, 226);
+}
+
+.tooltip {
+    position: absolute;
+    top: -70%;
+    left: 0;
+    right: 0;
+    background-color: #4CAF50;
+    border-radius: 10px;
+    padding: 6px 4px 6px 4px;
+    white-space: nowrap;
+    visibility: hidden;
+}
+
+.button-icon:hover .tooltip {
+    visibility: visible !important;
+}
+
+/* hint bottom arrow */
+.tooltip::after {
+    content: " ";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-color: #4CAF50 transparent transparent transparent;
+    border-style: solid;
+    border-width: 5px;
+}

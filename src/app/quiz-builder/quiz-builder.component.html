@@ -1,13 +1,23 @@
 
 <div class="body">
-    <h2>QUIZ BUILDER</h2>
+    <div class="title">
+        QUIZ BUILDER
+    </div>
+    <br>
 
-    <div>Quiz title:</div>
-    <input id="quiz-title" type="text" size="60"><br><br>
+    <div class="bold">
+        Quiz title:
+    </div>
+    <input id="quiz-title" type="text" size="30">
+    <br><br>
     
     <form id="add-form" class="add-form" action="">
-        Question:<br>
-        <input id="add-title" type="text" size="20"><br><br>
+        <span class="bold">
+            Question:
+        </span>
+        <br>
+        <input id="add-title" type="text" size="20">
+        <br><br>
 
         <div id="question-type-picker">
             <label><input id="type-1" class="question-type" type="radio" name="question-type" value="1" (click)="toggleType()" checked="checked">Essay</label>
@@ -40,12 +50,6 @@
         <input class="button" type="button" (click)="addQuestion()" value="Add question">
     </form><br>
 
-    <input class="button" type="button" (click)="downloadQuiz()" value="Download quiz">
-    <input class="button" type="file" (change)="uploadQuiz($event)" value="Upload quiz">
-    <a routerLink="/home">
-        <input class="button" type="button" value="Back">
-    </a>
-
     <div class="questions-container">
         <div *ngFor="let question of questions; index as i">
             <div class="question">
@@ -59,5 +63,24 @@
                 </div>
             </div>
         </div>
+    </div><br><br>
+
+    <div class="button-row">
+        <label for="downloadQuizButton" class="button-icon">
+            <i class="fa-solid fa-file-arrow-down fa-xl"></i>
+            <span class="tooltip">Download</span>
+            <input id="downloadQuizButton" type="button" style="display: none;" (click)="downloadQuiz()">
+        </label>
+
+        <label for="uploadQuizButton" class="button-icon">
+            <i class="fa-solid fa-file-arrow-up fa-xl"></i>
+            <span class="tooltip">Upload quiz</span>
+            <input id="uploadQuizButton" type="file" style="display: none;" (change)="uploadQuiz($event)">
+        </label>
+
+        <a routerLink="/home" class="button-icon">
+            <i class="fa-solid fa-house fa-xl"></i>
+            <span class="tooltip">Back</span>
+        </a>
     </div>
 </div>

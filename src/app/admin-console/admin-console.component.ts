@@ -7,15 +7,16 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class AdminConsoleComponent implements OnInit {
 	@Input() socket = '' as any;
+	messageStyle = 1;
 
 	ngOnInit(): void {
 		this.socket.on('get-user-connected', (name: string) => {
 			let users = document.getElementById('users');
-			users?.append(this.customCreateElement('div', {'id': name, 'style': 'padding-left: 5px;'}, name));
+			users?.append(this.customCreateElement('div', name, name));
 
 			let id = new Date().getTime().toString();
 			let status = document.getElementById('status');
-			status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, `${name} connected`));
+			status?.append(this.customCreateElement('div', id, `${name} connected`));
 
 			// clear message after 3 seconds
 			this.clearMessage(id);
@@ -27,7 +28,7 @@ export class AdminConsoleComponent implements OnInit {
 
 			let id = new Date().getTime().toString();
 			let status = document.getElementById('status');
-			status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, `${name} disconnected`));
+			status?.append(this.customCreateElement('div', id, `${name} disconnected`));
 
 			this.clearMessage(id);
 		});
@@ -35,7 +36,7 @@ export class AdminConsoleComponent implements OnInit {
 		this.socket.on('get-question', (name: string) => {
 			let id = new Date().getTime().toString();
 			let status = document.getElementById('status');
-			status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, `${name} has a question`));
+			status?.append(this.customCreateElement('div', id, `${name} has a question`));
 
 			this.clearMessage(id);
 		});
@@ -43,7 +44,7 @@ export class AdminConsoleComponent implements OnInit {
 		this.socket.on('get-quiz-status', () => {
 			let id = 'quiz';
 			let status = document.getElementById('status');
-			status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, 'Quiz uploaded.'));
+			status?.append(this.customCreateElement('div', id, 'Quiz uploaded.'));
 
 			this.clearMessage(id);
 		});
@@ -51,7 +52,7 @@ export class AdminConsoleComponent implements OnInit {
 		this.socket.on('get-pdf-status', () => {
 			let id = 'pdf';
 			let status = document.getElementById('status');
-			status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, 'PDF shared with users.'));
+			status?.append(this.customCreateElement('div', id, 'PDF shared with users.'));
 
 			this.clearMessage(id);
 		});
@@ -59,7 +60,7 @@ export class AdminConsoleComponent implements OnInit {
 		this.socket.on('get-image-status', () => {
 			let id = 'image';
 			let status = document.getElementById('status');
-			status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, 'Image shared with users.'));
+			status?.append(this.customCreateElement('div', id, 'Image shared with users.'));
 
 			this.clearMessage(id);
 		});
@@ -67,12 +68,12 @@ export class AdminConsoleComponent implements OnInit {
 		this.socket.on('get-start-stream', () => {
 			let id = 'start';
 			let status = document.getElementById('status');
-			status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, 'Stream started.'));
+			status?.append(this.customCreateElement('div', id, 'Stream started.'));
 
 			this.clearMessage(id);
 
 			id = 'stream';
-			status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, 'Streaming...'));
+			status?.append(this.customCreateElement('div', id, 'Streaming...'));
 		});
 
 		this.socket.on('get-stream-status', (stream: boolean) => {
@@ -84,13 +85,13 @@ export class AdminConsoleComponent implements OnInit {
 				if (stream) {
 					let id = 'stream';
 					let status = document.getElementById('status');
-					status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, 'Streaming...'));
+					status?.append(this.customCreateElement('div', id, 'Streaming...'));
 				}
 				// currently paused
 				else if (!stream) {
 					let id = 'stream';
 					let status = document.getElementById('status');
-					status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, 'Stream paused...'));
+					status?.append(this.customCreateElement('div', id, 'Stream paused...'));
 				}
 			}, 100);
 		});
@@ -98,7 +99,7 @@ export class AdminConsoleComponent implements OnInit {
 		this.socket.on('get-stop-stream', () => {
 			let id = 'stop';
 			let status = document.getElementById('status');
-			status?.append(this.customCreateElement('div', {'id': id, 'style': 'padding-left: 5px;'}, 'Stream stopped.'));
+			status?.append(this.customCreateElement('div', id, 'Stream stopped.'));
 
 			this.clearMessage(id);
 
@@ -107,10 +108,18 @@ export class AdminConsoleComponent implements OnInit {
 		});
 	}
 
-	customCreateElement(tag: string, attributes: any, text: string) {
+	customCreateElement(tag: string, id: string, text: string) {
 		let e = document.createElement(tag);
-		for (let a in attributes) {
-			e.setAttribute(a, attributes[a]);
+		e.id = id;
+
+		// alternate message background colors
+		if (this.messageStyle == 1) {
+			e.setAttribute('style', 'padding-left: 5px; background-color: #91B493;')
+			this.messageStyle = 2;
+		}
+		else {
+			e.setAttribute('style', 'padding-left: 5px; background-color: #82A284')
+			this.messageStyle = 1;
 		}
 		e.textContent = text;
 		return e;
