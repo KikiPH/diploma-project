@@ -12,19 +12,23 @@
     <div *ngIf="admin" class="questions-container">
         <div *ngFor="let question of quiz; index as i">
             <div class="question">
-                <h3>
-                    #{{ i + 1 }}
-                    {{ question.title }}
-                </h3>
+                <div class="question-header">
+                    <span class="question-number">{{ i+1 }}.</span>
+                    <span class="question-title" style="margin-right: 24px;">{{ question.title }}</span>
+                </div>
 
                 <div *ngIf="question.type != 1">
-                    <div *ngFor="let answer of question.answers; index as j" [ngStyle]="{'color': answer.correct ? 'green' : 'red'}">
-                        {{ answer.text }} {{ getAnswerPercentage(i, j) }}
+                    <div *ngFor="let answer of question.answers; index as j" class="question-option"
+                                [ngStyle]="{'color': answer.correct ? 'green' : 'red', 'background-color': j % 2 == 0 ? '#A9D6AC': '#9AD99E'}">
+                        <span *ngIf="answer.text" class="question-percentage-hidden">{{ getAnswerPercentage(i, j) }}</span>
+                        {{ answer.text }}
+                        <span *ngIf="answer.text" class="question-percentage">{{ getAnswerPercentage(i, j) }}</span>
                     </div>
                 </div>
 
                 <div *ngIf="question.type == 1">
-                    <div *ngFor="let answer of answers[i]; index as j">
+                    <div *ngFor="let answer of answers[i]; index as j" class="question-option"
+                                [ngStyle]="{'color': 'white', 'background-color': j % 2 == 0 ? '#A9D6AC': '#9AD99E'}">
                         {{ answer }}
                     </div>
                 </div>
@@ -37,26 +41,26 @@
         <div *ngIf="quiz.length > 0" id="quiz-form" class="quiz-form">
             <div *ngFor="let question of quiz; index as i">
                 <div class="question">
-                    <h3>
-                        #{{ i + 1 }}
-                        {{ question.title }}
-                    </h3>
+                    <div class="question-header">
+                        <span class="question-number">{{ i+1 }}.</span>
+                        <span class="question-title" style="margin-right: 24px;">{{ question.title }}</span>
+                    </div>
 
                     <!-- essay question -->
-                    <div *ngIf="question.type == 1">
+                    <div *ngIf="question.type == 1" class="question-option">
                         <input type="text" size="60" class="question{{ i + 1 }}">
                     </div>
 
                     <!-- single choice question -->
                     <div *ngIf="question.type == 2">
-                        <div *ngFor="let answer of question.answers; index as j">
+                        <div *ngFor="let answer of question.answers; index as j" class="question-option">
                             <input *ngIf="answer.text" class="question{{ i + 1 }}" type="radio" name="{{ i + 1 }}" value="{{ answer.text }}">{{ answer.text }}
                         </div>
                     </div>
 
                     <!-- multiple choice question -->
                     <div *ngIf="question.type == 3">
-                        <div *ngFor="let answer of question.answers; index as j">
+                        <div *ngFor="let answer of question.answers; index as j" class="question-option">
                             <input *ngIf="answer.text" class="question{{ i + 1 }}" type="checkbox" value="{{ answer.text }}">{{ answer.text }}
                         </div>
                     </div>
@@ -68,31 +72,31 @@
 
     <!-- admin buttons row -->
     <div *ngIf="admin" class="button-row">
-        <label for="uploadQuiz" class="button">
-            <i class="fa-solid fa-list fa-2xl"></i>
+        <label for="uploadQuiz" class="button-icon">
+            <i class="fa-solid fa-list fa-xl"></i>
             <span class="tooltip">Upload quiz</span>
             <input id="uploadQuiz" type="file" style="display: none;" (change)="clear(); uploadQuiz($event)">
         </label>
 
-        <label for="uploadFile" class="button">
-            <i class="fa-solid fa-file-arrow-up fa-2xl"></i>
+        <label for="uploadFile" class="button-icon">
+            <i class="fa-solid fa-file-arrow-up fa-xl"></i>
             <span class="tooltip">Upload File</span>
             <input id="uploadFile" type="file" style="display: none;" (change)="clear(); uploadFile($event)">
         </label>
 
-        <label for="sendFileButton" class="button">
-            <i class="fa-solid fa-paper-plane fa-2xl"></i>
+        <label for="sendFileButton" class="button-icon">
+            <i class="fa-solid fa-paper-plane fa-xl"></i>
             <span class="tooltip">Send file</span>
             <input id="sendFileButton" type="button" style="display: none;" (click)="sendFile()">
         </label>
 
-        <label *ngIf="!stream" for="startStreamButton" class="button">
-            <i class="fa-solid fa-video fa-2xl"></i>
+        <label *ngIf="!stream" for="startStreamButton" class="button-icon">
+            <i class="fa-solid fa-video fa-xl"></i>
             <span class="tooltip">Share screen</span>
             <input id="startStreamButton" type="button" style="display: none;" (click)="startStream()">
         </label>
 
-        <label *ngIf="stream" for="stopStreamButton" class="button">
+        <label *ngIf="stream" for="stopStreamButton" class="button-icon">
             <span class="fa-stack fa-2x">
                 <i class="fa-solid fa-video fa-2xs fa-stack-1x"></i>
                 <i class="fa-solid fa-ban fa-2xs fa-stack-2x" style="color: red"></i>
@@ -101,26 +105,26 @@
             <input id="stopStreamButton" type="button" style="display: none;" (click)="stopStream()">
         </label>
 
-        <label *ngIf="streamRunning" for="toggleStreamButton" class="button">
-            <i class="fa-solid fa-play fa-2xl"></i>
-            <span class="tooltip">Pause/play</span>
+        <label *ngIf="!streamRunning" for="toggleStreamButton" class="button-icon">
+            <i class="fa-solid fa-play fa-xl"></i>
+            <span class="tooltip">Play</span>
             <input id="toggleStreamButton" type="button" style="display: none;" (click)="toggleStream()">
         </label>
 
-        <label *ngIf="!streamRunning" for="toggleStreamButton" class="button">
-            <i class="fa-solid fa-pause fa-2xl"></i>
-            <span class="tooltip">Pause/play</span>
+        <label *ngIf="streamRunning" for="toggleStreamButton" class="button-icon">
+            <i class="fa-solid fa-pause fa-xl"></i>
+            <span class="tooltip">Pause</span>
             <input id="toggleStreamButton" type="button" style="display: none;" (click)="toggleStream()">
         </label>
 
-        <label for="drawButton" class="button">
-            <i class="fa-solid fa-pencil fa-2xl"></i>
+        <label for="drawButton" class="button-icon">
+            <i class="fa-solid fa-pencil fa-xl"></i>
             <span class="tooltip">Draw</span>
             <input id="drawButton" type="button" style="display: none;" (click)="toggleDraw()">
         </label>
         
-        <a routerLink="/home" class="button" (click)="stopRoom()">
-            <i class="fa-solid fa-house fa-2xl"></i>
+        <a routerLink="/home" class="button-icon" (click)="stopRoom()">
+            <i class="fa-solid fa-house fa-xl"></i>
             <span class="tooltip">Stop room</span>
         </a>
     </div>
@@ -129,13 +133,13 @@
 
     <!-- guest buttons row -->
     <div *ngIf="!admin" class="button-row">
-        <label for="raiseHandButton" class="button">
-            <i class="fa-solid fa-hand fa-2xl"></i>
+        <label for="raiseHandButton" class="button-icon">
+            <i class="fa-solid fa-hand fa-xl"></i>
             <span class="tooltip">Raise hand</span>
             <input id="raiseHandButton" type="button" style="display: none;" (click)="sendQuestion()">
         </label>
-        <a routerLink="/home" class="button" (click)="leaveRoom()">
-            <i class="fa-solid fa-house fa-2xl"></i>
+        <a routerLink="/home" class="button-icon" (click)="leaveRoom()">
+            <i class="fa-solid fa-house fa-xl"></i>
             <span class="tooltip">Home</span>
         </a>
     </div>

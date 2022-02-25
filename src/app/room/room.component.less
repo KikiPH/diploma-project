@@ -5,50 +5,21 @@
     overflow: hidden;
 }
 
-.button-row {
-    position: absolute;
-    bottom: 5%;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
-.button {
-    position: relative;
-    width: 40px;
-    height: 40px;
-    padding-top: 20px;
-    text-align: center;
-}
-
-.tooltip {
-    position: absolute;
-    top: -60%;
-    left: 0;
-    right: 0;
-    background-color: #4CAF50;
-    border-radius: 10px;
-    padding: 6px 4px 6px 4px;
-    white-space: nowrap;
-    visibility: hidden;
-}
-
-.button:hover .tooltip {
-    visibility: visible !important;
-}
-
-/* hint bottom arrow */
-.tooltip::after {
-    content: " ";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-color: #4CAF50 transparent transparent transparent;
-    border-style: solid;
-    border-width: 5px;
-}
-
 .fa-stack {
     height: auto;
+    left: -68%;
+}
+
+.question-percentage {
+    float: right;
+    font-weight: normal;
+    margin-right: 3px;
+}
+
+/* this is used to help center the answer text */
+.question-percentage-hidden {
+    visibility: hidden;
+    float: left;
+    font-weight: normal;
+    margin-left: 3px;
 }

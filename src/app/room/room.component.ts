@@ -221,6 +221,7 @@ export class RoomComponent {
 			this.socket.emit('stop-stream', this.roomId);
 		}
 		this.stream = false;
+		this.streamRunning = true; // switch to pause button
 	}
 
 	toggleDraw() {

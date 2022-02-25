@@ -50,15 +50,19 @@
         <input class="button" type="button" (click)="addQuestion()" value="Add question">
     </form><br>
 
-    <div class="questions-container">
+    <div class="question-container">
         <div *ngFor="let question of questions; index as i">
             <div class="question">
-                <h3>
-                    #{{ i+1 }}
-                    {{ question.title }}
-                    <button (click)="removeQuestion(i)">X</button>
-                </h3>
-                <div *ngFor="let answer of question.answers; index as j" [ngStyle]="{'color': answer.correct ? 'green' : 'red'}">
+                <div class="question-header">
+                    <span class="question-number">{{ i+1 }}.</span>
+                    <span class="question-title">{{ question.title }}</span>
+                    <label for="removeButton" class="button small">
+                        X
+                        <input id="removeButton" style="display: none;" type="button" (click)="removeQuestion(i)">
+                    </label>
+                </div>
+                <div *ngFor="let answer of question.answers; index as j" class="question-option"
+                            [ngStyle]="{'color': answer.correct ? 'green' : 'red', 'background-color': j % 2 == 0 ? '#A9D6AC': '#9AD99E'}">
                     {{ answer.text }}
                 </div>
             </div>

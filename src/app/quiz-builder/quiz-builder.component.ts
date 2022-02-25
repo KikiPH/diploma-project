@@ -31,6 +31,10 @@ export class QuizBuilderComponent {
 
 	addQuestion() {
 		let title = (<HTMLInputElement>document.getElementById('add-title')).value;
+		if (title == '') {
+			alert('Please enter question text.');
+			return;
+		}
 
 		let answer1 = (<HTMLInputElement>document.getElementById('add-answer-1')).value;
 		let answer1Correct = (<HTMLInputElement>document.getElementById('toggle-answer-1')).checked;

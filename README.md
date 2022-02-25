@@ -12,19 +12,16 @@ brez ikone:
 HOME -> Join, Host, Create quiz
 QUIZBUILDER -> Add question
 
-stili -> quiz answers, questions, file display, quiz form
 
-join button and button-icon classes
-room icons 2xl -> xl (manjse)
-remove empty classes
-admin-console message text color
-stop stream icon align
-start stream -> pause (icon change) -> stop stream (icon doesnt change back)
-
+footer border ? (da se ne prekrivajo elementi)
+stili -> draw
 crop stream (better & check with file upload)
 border stream size window
-remove hidden answer types for essay questions
-sticky footer (guest -> big quiz)
+stili -> file display
+
+admin-console message text color
+quiz-builder X remove question -> vedno desno zgoraj
+quiz display -> združi classe
 =============================
 stream pause -> fix black screen (odstrani funkcijo pause/play ? // background color + text "paused" ?)
 v room dodaj pošiljanje posameznega vprašanja (quick builder on click -> send -> show answers -> dismiss on click)
@@ -37,7 +34,8 @@ dodajanje slike k vprašanju
 risanje -> text field
 razdrobitev kode -> quiz-viewer component, video-component, ...
 
-start room -> brez simulacije klika (.click()) ?
-upload file/image -> združi kodo ?
-status messages -> združi kodo ?
+start room -> brez simulacije klika (.click())
+remove hidden answer types for essay questions (change JSON parser)
+upload file/image -> združi kodo
+status messages -> združi kodo
 console warning critical dependency ?
