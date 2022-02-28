@@ -87,6 +87,10 @@ io.on('connection', socket => {
     });
 
     socket.on('stop-room', (roomId) => {
+        for (let socketId of getUsers(roomId)) {
+            socket.to(socketId).emit('get-stop-room');
+        }
+
         delete rooms[roomId];
     });
 

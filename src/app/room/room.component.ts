@@ -42,6 +42,7 @@ export class RoomComponent {
 
 				// and show their stream
 				call.on('stream', (stream: any) => {
+					this.clear();
 					this.addVideoStream(stream);
 				});
 			});
@@ -78,6 +79,7 @@ export class RoomComponent {
 			reader.readAsDataURL(blob);
 			reader.onloadend = () => {
 				fileDisplay!.innerHTML = `<embed id='viewPDF' src='${reader.result}' width='800' height='600' type='application/pdf'>`;
+				fileDisplay?.setAttribute('style', 'display: block;'); // make element visible
 			}
 		});
 		
@@ -89,6 +91,7 @@ export class RoomComponent {
 			reader.readAsDataURL(blob);
 			reader.onloadend = () => {
 				fileDisplay!.innerHTML = `<img id='viewImg' src='${reader.result}' width='800' height='600'>`;
+				fileDisplay?.setAttribute('style', 'display: block;');
 			}
 		});
 
@@ -100,10 +103,17 @@ export class RoomComponent {
 		});
 
 		this.socket.on('get-stop-stream', () => {
-			let video = document.getElementById('video') as HTMLVideoElement;
-			if (video) {
-				(<MediaStream>video.srcObject)!.getTracks().forEach(t => t.stop());
+			let video = document.getElementById('videoContainer');
+			while (video?.firstChild) {
+				video.removeChild(video.lastChild!);
 			}
+		});
+
+		this.socket.on('get-stop-room', () => {
+			document.getElementById('leave-room')?.click();
+			setTimeout(() => {
+				alert('The admin has stopped the room.');
+			}, 100);
 		});
 
 		// on tab/browser close
@@ -120,10 +130,13 @@ export class RoomComponent {
 	// ADMIN FUNCTIONS
 	uploadQuiz(event: any) {
 		let fileType = event.target.files[0].type;
+
 		if (fileType != 'application/json') {
 			alert(`File type ${fileType} is not supported. Please upload quiz in JSON format.`);
 			return;
 		}
+
+		this.clear();
 
 		// read quiz questions and answers from JSON file
 		const reader = new FileReader();
@@ -148,11 +161,20 @@ export class RoomComponent {
 	}
 
 	uploadFile(event: any) {
+		let fileType = event.target.files[0].type;
+
+		if (fileType != 'application/pdf' && !fileType.includes('image')) {
+			alert(`File type ${fileType} is not supported. Please convert to pdf or image and try again.`);
+			return;
+		}
+		
+		this.clear();
+
+		// read pdf or image file
 		this.file = event.target.files[0];
 		let src = URL.createObjectURL(event.target.files[0]);
 
 		let fileDisplay = document.getElementById('fileContainer');
-		let fileType = event.target.files[0].type;
 
 		if (fileType == 'application/pdf') {
 			fileDisplay!.innerHTML = `<iframe id='viewPDF' src='${src}' width='800' height='600'>`;
@@ -160,10 +182,6 @@ export class RoomComponent {
 
 		else if (fileType.includes('image')) {
 			fileDisplay!.innerHTML = `<img id='viewImg' src='${src}' width='800' height='600'>`;
-		}
-
-		else {
-			alert(`File type ${fileType} is not supported. Please convert to pdf or image and try again.`);
 		}
 	}
 
@@ -290,16 +308,23 @@ export class RoomComponent {
 		// clear button values
 		setTimeout(() => { // timeout so it can firstly parse (send and show) the new uploaded file
 			let uploadQuiz = <HTMLInputElement>document.getElementById('uploadQuiz');
-			uploadQuiz.value = '';
+			if (uploadQuiz) uploadQuiz.value = '';
 			let uploadFile = <HTMLInputElement>document.getElementById('uploadFile');
-			uploadFile.value = '';
+			if (uploadFile) uploadFile.value = '';
 		}, 100);
 
 		// clear display fields
 		let videoContainer = document.getElementById('videoContainer');
-		if (videoContainer) videoContainer.innerHTML = "";
+		if (videoContainer) {
+			videoContainer.innerHTML = "";
+			videoContainer.setAttribute('style', 'display: none;');
+		}
+
 		let fileContainer = document.getElementById('fileContainer');
-		if (fileContainer) fileContainer.innerHTML = "";
+		if (fileContainer) {
+			fileContainer.innerHTML = "";
+			if (!this.admin) fileContainer.setAttribute('style', 'display: none;');
+		}
 
 		// reset other
 		this.draw = false;
@@ -343,6 +368,15 @@ export class RoomComponent {
 		video.addEventListener('loadedmetadata', () => {
 			video.play();
 		});
-		document.getElementById('videoContainer')?.append(video);
+		let videoContainer = document.getElementById('videoContainer');
+		if (videoContainer) {
+			videoContainer.append(video);
+			videoContainer.setAttribute('style', 'display: block;');
+
+			// when restarting stream check and remove old video element if still present
+			if (videoContainer.childNodes.length > 1) {
+				videoContainer.firstChild!.remove();
+			}
+		}
 	}
 }

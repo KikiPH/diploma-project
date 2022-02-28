@@ -1,15 +1,20 @@
 <div class="body">
     <admin-console *ngIf="admin" [socket]="socket"></admin-console><br>
 
-    <!--- if admin then overlay the file and the canvas // if guest then show file and stream side by side -->
-    <div id="display" [ngStyle]="{'display': admin ? 'inline-block': 'flex'}">
-        <div *ngIf="!admin" id="videoContainer" class="video-container"></div>
-        <div id="fileContainer" [ngStyle]="{'position': draw ? 'absolute' : '', 'flex': !admin && 1}"></div>
+    <!-- admin display: overlay file and canvas -->
+    <div *ngIf="admin" style="position: absolute; left: 23%;">
+        <div id="fileContainer" style="position: absolute;"></div>
         <draw *ngIf="draw"></draw>
     </div>
 
+    <!-- guest display: show file and stream side by side -->
+    <div *ngIf="!admin" [ngStyle]="{'display': 'flex'}">
+        <div id="videoContainer" class="video-container"></div>
+        <div id="fileContainer" [ngStyle]="{'position': '', 'flex': true}"></div>
+    </div>
+
     <!-- quiz display for admin (with statistics) -->
-    <div *ngIf="admin" class="questions-container">
+    <div *ngIf="admin" class="question-container" style="position: absolute; left: 23%;">
         <div *ngFor="let question of quiz; index as i">
             <div class="question">
                 <div class="question-header">
@@ -37,7 +42,7 @@
     </div>
 
     <!-- quiz display for guests -->
-    <div *ngIf="!admin" class="questions-container">
+    <div *ngIf="!admin" class="question-container">
         <div *ngIf="quiz.length > 0" id="quiz-form" class="quiz-form">
             <div *ngFor="let question of quiz; index as i">
                 <div class="question">
@@ -75,13 +80,13 @@
         <label for="uploadQuiz" class="button-icon">
             <i class="fa-solid fa-list fa-xl"></i>
             <span class="tooltip">Upload quiz</span>
-            <input id="uploadQuiz" type="file" style="display: none;" (change)="clear(); uploadQuiz($event)">
+            <input id="uploadQuiz" type="file" style="display: none;" (change)="uploadQuiz($event)">
         </label>
 
         <label for="uploadFile" class="button-icon">
             <i class="fa-solid fa-file-arrow-up fa-xl"></i>
             <span class="tooltip">Upload File</span>
-            <input id="uploadFile" type="file" style="display: none;" (change)="clear(); uploadFile($event)">
+            <input id="uploadFile" type="file" style="display: none;" (change)="uploadFile($event)">
         </label>
 
         <label for="sendFileButton" class="button-icon">
@@ -138,7 +143,7 @@
             <span class="tooltip">Raise hand</span>
             <input id="raiseHandButton" type="button" style="display: none;" (click)="sendQuestion()">
         </label>
-        <a routerLink="/home" class="button-icon" (click)="leaveRoom()">
+        <a routerLink="/home" id="leave-room" class="button-icon" (click)="leaveRoom()">
             <i class="fa-solid fa-house fa-xl"></i>
             <span class="tooltip">Home</span>
         </a>
