@@ -8,9 +8,9 @@
     </div>
 
     <!-- guest display: show file and stream side by side -->
-    <div *ngIf="!admin" [ngStyle]="{'display': 'flex'}">
-        <div id="videoContainer" class="video-container"></div>
-        <div id="fileContainer" [ngStyle]="{'position': '', 'flex': true}"></div>
+    <div *ngIf="!admin" style="display: flex; justify-content: center;">
+        <div id="videoContainer"></div>
+        <div id="fileContainer"></div>
     </div>
 
     <!-- quiz display for admin (with statistics) -->
@@ -116,11 +116,13 @@
             <input id="toggleStreamButton" type="button" style="display: none;" (click)="toggleStream()">
         </label>
 
+        <!--
         <label *ngIf="streamRunning" for="toggleStreamButton" class="button-icon">
             <i class="fa-solid fa-pause fa-xl"></i>
             <span class="tooltip">Pause</span>
             <input id="toggleStreamButton" type="button" style="display: none;" (click)="toggleStream()">
         </label>
+        -->
 
         <label for="drawButton" class="button-icon">
             <i class="fa-solid fa-pencil fa-xl"></i>

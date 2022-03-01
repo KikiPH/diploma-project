@@ -42,7 +42,9 @@ export class RoomComponent {
 
 				// and show their stream
 				call.on('stream', (stream: any) => {
-					this.clear();
+					// soft reset (don't remove file, stream gets overwritten)
+					this.clear(false);
+
 					this.addVideoStream(stream);
 				});
 			});
@@ -72,25 +74,27 @@ export class RoomComponent {
 		});
 
 		this.socket.on('get-pdf', pdf => {
-			this.clear();
+			// soft reset (don't remove stream, file gets overwritten)
+			this.clear(false);
+
 			let fileDisplay = document.getElementById('fileContainer');
 			let blob = new Blob([pdf], { type: 'application/pdf' });
 			let reader = new FileReader();
 			reader.readAsDataURL(blob);
 			reader.onloadend = () => {
-				fileDisplay!.innerHTML = `<embed id='viewPDF' src='${reader.result}' width='800' height='600' type='application/pdf'>`;
+				fileDisplay!.innerHTML = `<embed id='viewPDF' src='${reader.result}' width='800' height='598' type='application/pdf'>`;
 				fileDisplay?.setAttribute('style', 'display: block;'); // make element visible
 			}
 		});
 		
 		this.socket.on('get-image', image => {
-			this.clear();
+			this.clear(false);
 			let fileDisplay = document.getElementById('fileContainer');
 			let blob = new Blob([image]);
 			let reader = new FileReader();
 			reader.readAsDataURL(blob);
 			reader.onloadend = () => {
-				fileDisplay!.innerHTML = `<img id='viewImg' src='${reader.result}' width='800' height='600'>`;
+				fileDisplay!.innerHTML = `<img id='viewImg' src='${reader.result}' width='800' height='598'>`;
 				fileDisplay?.setAttribute('style', 'display: block;');
 			}
 		});
@@ -106,6 +110,7 @@ export class RoomComponent {
 			let video = document.getElementById('videoContainer');
 			while (video?.firstChild) {
 				video.removeChild(video.lastChild!);
+				video.setAttribute('style', 'display: none'); // hide html element
 			}
 		});
 
@@ -168,7 +173,8 @@ export class RoomComponent {
 			return;
 		}
 		
-		this.clear();
+		// soft reset (don't stop stream, file gets overwritten)
+		this.clear(false);
 
 		// read pdf or image file
 		this.file = event.target.files[0];
@@ -302,7 +308,7 @@ export class RoomComponent {
 	}
 
 	// HELPER FUNCTIONS
-	clear() {
+	clear(hard: boolean = true) {
 		this.quiz = [];
 
 		// clear button values
@@ -313,22 +319,24 @@ export class RoomComponent {
 			if (uploadFile) uploadFile.value = '';
 		}, 100);
 
-		// clear display fields
-		let videoContainer = document.getElementById('videoContainer');
-		if (videoContainer) {
-			videoContainer.innerHTML = "";
-			videoContainer.setAttribute('style', 'display: none;');
-		}
+		if (hard) {
+			// clear display fields
+			let videoContainer = document.getElementById('videoContainer');
+			if (videoContainer) {
+				videoContainer.innerHTML = "";
+				videoContainer.setAttribute('style', 'display: none;');
+			}
 
-		let fileContainer = document.getElementById('fileContainer');
-		if (fileContainer) {
-			fileContainer.innerHTML = "";
-			if (!this.admin) fileContainer.setAttribute('style', 'display: none;');
-		}
+			let fileContainer = document.getElementById('fileContainer');
+			if (fileContainer) {
+				fileContainer.innerHTML = "";
+				if (!this.admin) fileContainer.setAttribute('style', 'display: none;');
+			}
 
-		// reset other
-		this.draw = false;
-		this.stopStream();
+			// reset other
+			this.draw = false;
+			this.stopStream();
+		}
 	}
 
 	getAnswerPercentage(questionId: number, answerId: number) {
@@ -368,10 +376,14 @@ export class RoomComponent {
 		video.addEventListener('loadedmetadata', () => {
 			video.play();
 		});
+		
+		// crop video
+		video.setAttribute('style', 'object-fit: none; margin: -30px 0 0 -444px;');
+
 		let videoContainer = document.getElementById('videoContainer');
 		if (videoContainer) {
 			videoContainer.append(video);
-			videoContainer.setAttribute('style', 'display: block;');
+			videoContainer.setAttribute('style', 'display: block; width: 800px; height: 598px; margin-right: 20px; overflow: hidden;');
 
 			// when restarting stream check and remove old video element if still present
 			if (videoContainer.childNodes.length > 1) {

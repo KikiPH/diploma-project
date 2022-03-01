@@ -6,12 +6,6 @@ Run `ng g component component-name` to generate a new component.
 
 * - if it returns an error try installing nodemon with `npm install -g nodemon`
 
-
-crop stream (better & check with file upload)
-border stream size window
-stili -> file display (guest -> file / file + stream [poravnava sredina / pol-pol])
-remove stream pause -> fix black screen (odstrani funkcijo pause/play ? // background color + text "paused" ?)
-
 stili -> draw
 =============================
 IMPROVEMENTS:
@@ -33,3 +27,4 @@ admin-console message text color
 quiz-builder remove question (X) -> vedno desno zgoraj (trenutno ni pri dolgih vprašanjih)
 quiz display -> združi classe
 stream -> send new file (trenutno ustavi stream)
+stream pause/play button -> on pause black screen (naredi background color + text "paused")
