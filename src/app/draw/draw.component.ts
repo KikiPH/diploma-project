@@ -21,6 +21,7 @@ export class DrawComponent implements OnInit {
 	colors = ['black', 'red', 'blue', 'green', 'yellow', 'purple'];
 	color = 'black';
 	types = ['default', 'line', 'arrow', 'rectangle'];
+	typesIcons = ['fa-solid fa-paintbrush fa-l', 'fa-solid fa-minus fa-xl', 'fa-solid fa-arrow-right-long fa-xl', 'fa-regular fa-square-full fa-l']
 	type = 'default';
 	strokes = [
 		{ 'type': 'small', 'size': 2 },
@@ -57,10 +58,46 @@ export class DrawComponent implements OnInit {
 	// helper functions
 	changeColor(c: any) {
 		this.color = c;
+
+		let buttons = document.getElementsByClassName('color-button');
+		for (let i = 0; i < buttons.length; i++) {
+			// visually distinguish the selected color
+			if (this.colors[i] == this.color) {
+				let button = document.getElementById(buttons[i].id);
+				button?.setAttribute('style', `background: ${this.color}; border: 3px inset #4CAF50;`);
+			}
+			else {
+				let button = document.getElementById(buttons[i].id);
+				button?.setAttribute('style', `background: ${this.colors[i]}; border: 3px solid #B5DFB7;`);
+			}
+		}
 	}
 
 	changeType(t: any) {
 		this.type = t;
+
+		let buttons = document.getElementsByClassName('style-button');
+		for (let i = 0; i < buttons.length; i++) {
+			// visually distinguish the selected type
+			if (this.types[i] == this.type) {
+				let label = this.findLableForInput(`type${i}`);
+				label?.setAttribute('style', `background: #B5DFB7; border: 3px inset #4CAF50; color: black;`);
+			}
+			else {
+				let label = this.findLableForInput(`type${i}`);
+				label?.setAttribute('style', `background: #4CAF50; border: 3px solid #B5DFB7; color: white;`);
+			}
+		}
+	}
+
+	// get label element for corresponding input element
+	findLableForInput(id: string) {
+		let labels = document.getElementsByTagName('label');
+		for (let i = 0; i < labels.length; i++) {
+		   	if (labels[i].htmlFor == id)
+				return labels[i];
+		}
+		return null;
 	}
 
 	changeStroke() {
@@ -170,7 +207,7 @@ export class DrawComponent implements OnInit {
 
 		if (res == 'up' || res == "out") {
 			// other types (draw from mouse down position to mouse up position)
-			if (res == 'up' && this.type != 'default' && this.type != 'highlight') {
+			if (res == 'up' && this.type != 'default') {
 				this.prevX = this.currX;
 				this.prevY = this.currY;
 				this.currX = e.clientX - this.canvas.getBoundingClientRect().left;

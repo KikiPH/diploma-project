@@ -1,14 +1,35 @@
 <div>
-    <canvas id="canvas" class="canvas" width="800" height="600"></canvas>
-    <div *ngFor="let color of colors; index as i">
-        <div id="colors[i]" class="color-button" [ngStyle]="{'background': colors[i]}" (click)="changeColor(colors[i])"></div>
+    <canvas id="canvas" class="canvas" width="800" height="598"></canvas>
+    
+    <br>
+    
+    <div style="display: flex; justify-content: center;">
+        <div style="margin-right: 35px;">
+            <div *ngFor="let color of colors; index as i" style="display: inline-block">
+                <div id="colors{{i}}" class="color-button"
+                        [ngStyle]="{'background': colors[i], 'border': i == 0 ? '3px inset #4CAF50' : '3px solid #B5DFB7'}"
+                        (click)="changeColor(colors[i])"></div>
+            </div>
+
+            <br><br>
+
+            <span *ngFor="let type of types; index as i">
+                <label for="type{{i}}" class="button-icon"
+                        [ngStyle]="{'background': i == 0 ? '#B5DFB7' : '#4CAF50',
+                                    'border': i == 0 ? '3px inset #4CAF50' : '3px solid #B5DFB7',
+                                    'color': i == 0 ? 'black' : 'white'}">
+                    <i class="{{ typesIcons[i] }}"></i>
+                    <input id="type{{i}}" class="style-button" type="button" style="display: none;" (click)="changeType(type)">
+                </label>
+            </span>
+        </div>
+
+        <div style="margin-left: 35px;">
+            <select id="strokeSelect" class="button button-select" (change)="changeStroke()">
+                <option *ngFor="let stroke of strokes" [value]="stroke.size">{{ stroke.type }}</option>
+            </select>
+            <label class="button">Highlight<input class="checkbox-highlight" type="checkbox" (change)="toggleHighlight()"></label>
+            <label class="button"><input type="button" style="display: none" (click)="clear()">Clear</label>
+        </div>
     </div>
-    <span *ngFor="let type of types; index as i">
-        <input id="type" type="button" (click)="changeType(type)" value="{{ type }}">
-    </span>
-    <select id="strokeSelect" (change)="changeStroke()">
-        <option *ngFor="let stroke of strokes" [value]="stroke.size">{{ stroke.type }}</option>
-    </select>
-    <label><input type="checkbox" (change)="toggleHighlight()">highlight</label>
-    <input type="button" (click)="clear()" value="Clear">
 </div>
