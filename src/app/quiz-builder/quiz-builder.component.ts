@@ -62,6 +62,7 @@ export class QuizBuilderComponent {
 
 		let form = <HTMLFormElement>document.getElementById('add-form');
 		form.reset();
+		this.toggleType();
 	}
 
 	removeQuestion(i: number) {
