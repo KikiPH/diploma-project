@@ -6,6 +6,8 @@ dodajanje slike k vprašanju
 risanje -> text field
 razdrobitev kode -> quiz-viewer component, video-component, ...
 room -> pošiljanje posameznega vprašanja (quick builder on click -> send -> show answers -> dismiss on click)
+guest draw -> admin uporabniku omogoči risanje (kot da je poklican pred tablo)
+action button -> nabor "akcij", ki jih vnaprej določi predavatelj (nejasen postopek, prehitro, ne vidi se dobro ...)
 
 start room -> brez simulacije klika (.click())
 remove hidden answer types for essay questions (change JSON parser)
